@@ -39,7 +39,7 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
 
     if product.startswith('ls'):
         resolution = (-30, 30)
-    else
+    else:
         resolution = (-10, 10)
 
     xx = dc.load(product=product,
@@ -82,7 +82,7 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
             (xx.pixel_qa == 900)  |
             (xx.pixel_qa == 1348)
         )
-    else
+    else:
         good_quality = (
             (xx.pixel_qa == 66)   | # clear
             (xx.pixel_qa == 130)  |
