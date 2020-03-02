@@ -1,15 +1,59 @@
 #!/usr/bin/env python
 
+#############
+# S3 upload #
+#############
+
+def s3_export_xarray_to_geotiff(ds, band, bucket, prefix, **kwargs):
+    import os
+    from os.path import basename
+
+    fname = basename(prefix)
+
+    from export import export_xarray_to_geotiff
+
+    export_xarray_to_geotiff(ds, fname, bands=[band], crs="EPSG:3460", x_coord='x', y_coord='y')
+
+    try:
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID")
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
+        aws_s3_endpoint=os.getenv("AWS_S3_ENDPOINT")
+
+        endpoint_url=f"http://{aws_s3_endpoint}"
+
+        import boto3
+
+        s3 = boto3.client('s3',
+                          aws_access_key_id=aws_access_key_id,
+                          aws_secret_access_key=aws_secret_access_key,
+                          endpoint_url=endpoint_url)
+
+        s3.upload_file(fname, bucket, prefix)
+
+    except Exception as e:
+        print("Error: " + str(e))
+
+    finally:
+        os.remove(fname)
+
 ###################
 # Request handler #
 ###################
 
-def process_request(dc, client, type, **kwargs):
+def process_request(dc, client, type, product, **kwargs):
+    bucket = 'public-eo-data'
+    prefix = 'luigi'
+
     try:
         if type == "geomedian":
             from geomedian import process_geomedian
 
-            process_geomedian(dc=dc, client=client, **kwargs)
+            ds = process_geomedian(dc=dc, client=client, product=product, **kwargs)
+
+            if ds:
+                save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
+                for band in save_bands:
+                    s3_export_xarray_to_geotiff(ds, band, bucket, f"{prefix}/{product}-routine-geomedian-{band}.tif")
 
     except Exception as e:
         print("Error: " + str(e))
