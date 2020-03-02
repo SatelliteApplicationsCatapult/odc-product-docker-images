@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datacube-conf
+  namespace: odc-routine-products
+data:
+  datacube.conf: |
+    [datacube]
+    db_database: datacube
+
+    # A blank host will use a local socket. Specify a hostname (such as localhost) to use TCP.
+    db_hostname: datacubedb-postgresql.datacubedb.svc.cluster.local
+
+    # Credentials are optional: you might have other Postgres authentication configured.
+    # The default username is the current user id
+    db_username: postgres
+
+    # A blank password will fall back to default postgres driver authentication, such as reading your ~/.pgpass file.
+    db_password: localuser1234
