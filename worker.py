@@ -35,6 +35,7 @@ def process_request(type):
     #                       lat=latitude,
     #                       lon=longitude)
 
+    data_bands = ['red', 'green', 'blue']
     mask_bands = ['pixel_qa']
 
     output_crs = 'EPSG:3460'
@@ -54,7 +55,7 @@ def process_request(type):
                      y=1000)
                 )
 
-    if xx.time == 0:
+    if len(xx.time) == 0:
         return
 
     scale, offset = (1/10_000, 0)  # differs per product, aim for 0-1 values in float32
