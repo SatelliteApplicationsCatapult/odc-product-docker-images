@@ -1,7 +1,3 @@
-import os
-from os.path import basename
-
-import boto3
 import xarray as xr
 import rasterio
 
@@ -65,31 +61,3 @@ def export_xarray_to_geotiff(data, tif_path, bands=None, no_data=-9999, crs="EPS
             for index, band in enumerate(bands):
                 dst.write(data[band].values.astype(dtype), index + 1)
     dst.close()
-
-
-def s3_export_xarray_to_geotiff(ds, band, bucket, prefix, **kwargs):
-    fname = basename(prefix)
-
-    #export_xarray_to_geotiff(ds, fname, bands=[band], crs="EPSG:3460", x_coord='x', y_coord='y')
-    export_xarray_to_geotiff(ds, fname, bands=[band])
-
-    try:
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID")
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
-        aws_s3_endpoint=os.getenv("AWS_S3_ENDPOINT")
-
-        endpoint_url=f"http://{aws_s3_endpoint}"
-
-        s3 = boto3.client('s3',
-                          aws_access_key_id=aws_access_key_id,
-                          aws_secret_access_key=aws_secret_access_key,
-                          endpoint_url=endpoint_url)
-
-        s3.upload_file(fname, bucket, prefix)
-
-    except Exception as e:
-        print("Error: " + str(e))
-
-    finally:
-        os.remove(fname)
-

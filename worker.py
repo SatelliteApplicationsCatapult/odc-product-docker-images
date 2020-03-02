@@ -4,17 +4,47 @@
 # Data uploader #
 #################
 
+def s3_upload_band_file(ds, band, no_data, bucket, prefix):
+    from os.path import basename
+    from export import export_xarray_to_geotiff
+    import boto3
+
+    fname = basename(prefix)
+
+    export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs="EPSG:3460", x_coord='x', y_coord='y')
+    #export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data)
+
+    try:
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID")
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
+        aws_s3_endpoint=os.getenv("AWS_S3_ENDPOINT")
+
+        endpoint_url=f"http://{aws_s3_endpoint}"
+
+        s3 = boto3.client('s3',
+                          aws_access_key_id=aws_access_key_id,
+                          aws_secret_access_key=aws_secret_access_key,
+                          endpoint_url=endpoint_url)
+
+        s3.upload_file(fname, bucket, prefix)
+
+    except Exception as e:
+        print("Error: " + str(e))
+
+    finally:
+        os.remove(fname)
+
+
 def save_data(ds, type, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, bucket='public-eo-data', prefix='luigi', **kwargs):
-
-    from export import s3_export_xarray_to_geotiff
-
     pn = product[0:3] if product.startswith('ls') else product[0:2]
+    no_data = -9999 if product.startswith('ls') else 0
 
     for band in bands:
-        s3_export_xarray_to_geotiff(ds,
-                                    band,
-                                    bucket,
-                                    f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg4326_{longitude_from}_{longitude_to}_{latitude_from}_{latitude_to}_{band}.tif")
+        s3_upload_band_file(ds,
+                            band,
+                            no_data,
+                            bucket,
+                            f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg3460_{longitude_from}_{longitude_to}_{latitude_from}_{latitude_to}_{band}.tif")
 
 
 ###################
@@ -22,7 +52,6 @@ def save_data(ds, type, bands, product, time_from, time_to, longitude_from, long
 ###################
 
 def process_request(dc, client, type, **kwargs):
-
     try:
         if type == "geomedian":
             from geomedian import process_geomedian
@@ -47,7 +76,6 @@ def process_request(dc, client, type, **kwargs):
 import json
 
 def process_job(dc, client, json_data):
-
     loaded_json = json.loads(json_data)
     process_request(dc, client, **loaded_json)
 
