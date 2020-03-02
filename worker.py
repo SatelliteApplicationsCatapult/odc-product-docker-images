@@ -4,7 +4,7 @@
 # Geometric median #
 ####################
 
-def process_geomedian(client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
+def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
     import numpy as np
     import xarray as xr
 
@@ -12,18 +12,8 @@ def process_geomedian(client, product, latitude_from, latitude_to, longitude_fro
     import odc.algo
     from odc.algo import to_f32, from_float, xr_geomedian
 
-    from datacube import Datacube
-
-    dc = Datacube()
-
-    #product = 'ls7_usgs_sr_scene'
-    #latitude = (-18.2316, -18.0516)
-    #longitude = (178.2819, 178.6019)
-    #time_extents = ('1999-01-01', '2005-01-01')
-
     latitude = (float(latitude_from), float(latitude_to))
     longitude = (float(longitude_from), float(longitude_to))
-
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
@@ -104,14 +94,18 @@ def process_geomedian(client, product, latitude_from, latitude_to, longitude_fro
 ###################
 
 def process_request(type, **kwargs):
-    import dask
+    from datacube import Datacube
 
+    dc = Datacube()
+
+    import dask
     from dask.distributed import Client
+
     client = Client('dask-scheduler.dask.svc.cluster.local:8786')
 
     try:
         if type == "geomedian":
-            process_geomedian(client=client, **kwargs)
+            process_geomedian(dc=dc, client=client, **kwargs)
 
     except Exception as e:
         print("Error: " + str(e))
