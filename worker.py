@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-#################
-# Data uploader #
-#################
+###############
+# S3 uploader #
+###############
 
-def s3_upload_band_file(ds, band, no_data, bucket, prefix):
+def s3_upload_band_file(ds, band, no_data, output_crs, bucket, prefix):
     from os.path import basename
     from export import export_xarray_to_geotiff
     import boto3
 
     fname = basename(prefix)
 
-    export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs="EPSG:3460", x_coord='x', y_coord='y')
+    export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
     #export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data)
 
     try:
@@ -35,7 +35,11 @@ def s3_upload_band_file(ds, band, no_data, bucket, prefix):
         os.remove(fname)
 
 
-def save_data(ds, type, bands, product, time_from, time_to, bucket='public-eo-data', prefix='luigi', **kwargs):
+#################
+# Data uploader #
+#################
+
+def save_data(ds, type, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
 
@@ -44,12 +48,15 @@ def save_data(ds, type, bands, product, time_from, time_to, bucket='public-eo-da
     y_from = float(ds['y'][0])
     y_to = float(ds['y'][-1])
 
+    crs = output_crs.lower().replace(':', '')
+
     for band in bands:
         s3_upload_band_file(ds,
                             band,
                             no_data,
+                            output_crs,
                             bucket,
-                            f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg3460_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif")
+                            f"{prefix}/{pn}_{type}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif")
 
 
 ###################

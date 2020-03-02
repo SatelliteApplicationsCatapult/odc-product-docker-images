@@ -9,16 +9,13 @@ import hdstats
 import odc.algo
 from odc.algo import to_f32, from_float, xr_geomedian
 
-def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
-
+def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, **kwargs):
     latitude = (float(latitude_from), float(latitude_to))
     longitude = (float(longitude_from), float(longitude_to))
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
     mask_bands = ['pixel_qa' if product.startswith('ls') else 'scene_classification']
-
-    output_crs = 'EPSG:3460'
 
     if product.startswith('ls'):
         resolution = (-30, 30)
