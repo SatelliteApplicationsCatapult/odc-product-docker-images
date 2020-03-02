@@ -35,16 +35,21 @@ def s3_upload_band_file(ds, band, no_data, bucket, prefix):
         os.remove(fname)
 
 
-def save_data(ds, type, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_data(ds, type, bands, product, time_from, time_to, bucket='public-eo-data', prefix='luigi', **kwargs):
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
+
+    x_from = float(ds['x'][0])
+    x_to = float(ds['x'][-1])
+    y_from = float(ds['y'][0])
+    y_to = float(ds['y'][-1])
 
     for band in bands:
         s3_upload_band_file(ds,
                             band,
                             no_data,
                             bucket,
-                            f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg3460_{longitude_from}_{longitude_to}_{latitude_from}_{latitude_to}_{band}.tif")
+                            f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg3460_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif")
 
 
 ###################
