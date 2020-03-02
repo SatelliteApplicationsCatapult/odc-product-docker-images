@@ -23,21 +23,24 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
     dc = Datacube()
 
     #product = 'ls7_usgs_sr_scene'
-
-    # Sub-region selection - e.g. the city of Suva
     #latitude = (-18.2316, -18.0516)
     #longitude = (178.2819, 178.6019)
+    #time_extents = ('1999-01-01', '2005-01-01')
+
     latitude = (float(latitude_from), float(latitude_to))
     longitude = (float(longitude_from), float(longitude_to))
 
-    #time_extents = ('1999-01-01', '2005-01-01')
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
-    mask_bands = ['pixel_qa']
+    mask_bands = ['pixel_qa' if product.startswith('ls') else 'scene_classification']
 
     output_crs = 'EPSG:3460'
-    resolution = (-30, 30)
+
+    if product.startswith('ls'):
+        resolution = (-30, 30)
+    else
+        resolution = (-10, 10)
 
     xx = dc.load(product=product,
                  time=time_extents,
@@ -59,12 +62,33 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
     scale, offset = (1/10_000, 0)  # differs per product, aim for 0-1 values in float32
 
     # Identify pixels with valid data (requires working with native resolution datasets)
-    good_quality = (
-        (xx.pixel_qa == 66)   | # clear
-        (xx.pixel_qa == 130)  |
-        (xx.pixel_qa == 68)   | # water
-        (xx.pixel_qa == 132)
-    )
+    if product.startswith('s2'):
+        good_quality = (
+            (xx.scene_classification == 4) | # mask in VEGETATION
+            (xx.scene_classification == 5) | # mask in NOT_VEGETATED
+            (xx.scene_classification == 6) | # mask in WATER
+            (xx.scene_classification == 7)   # mask in UNCLASSIFIED
+        )
+    elif product.startswith('ls8'):
+        good_quality = (
+            (xx.pixel_qa == 322)  | # clear
+            (xx.pixel_qa == 386)  |
+            (xx.pixel_qa == 834)  |
+            (xx.pixel_qa == 898)  |
+            (xx.pixel_qa == 1346) |
+            (xx.pixel_qa == 324)  | # water
+            (xx.pixel_qa == 388)  |
+            (xx.pixel_qa == 836)  |
+            (xx.pixel_qa == 900)  |
+            (xx.pixel_qa == 1348)
+        )
+    else
+        good_quality = (
+            (xx.pixel_qa == 66)   | # clear
+            (xx.pixel_qa == 130)  |
+            (xx.pixel_qa == 68)   | # water
+            (xx.pixel_qa == 132)
+        )
 
     xx_data = xx[data_bands]
     xx_clean = odc.algo.keep_good_only(xx_data, where=good_quality)
