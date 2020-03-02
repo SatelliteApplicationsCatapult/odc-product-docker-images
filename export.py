@@ -70,7 +70,8 @@ def export_xarray_to_geotiff(data, tif_path, bands=None, no_data=-9999, crs="EPS
 def s3_export_xarray_to_geotiff(ds, band, bucket, prefix, **kwargs):
     fname = basename(prefix)
 
-    export_xarray_to_geotiff(ds, fname, bands=[band], crs="EPSG:3460", x_coord='x', y_coord='y')
+    #export_xarray_to_geotiff(ds, fname, bands=[band], crs="EPSG:3460", x_coord='x', y_coord='y')
+    export_xarray_to_geotiff(ds, fname, bands=[band])
 
     try:
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID")

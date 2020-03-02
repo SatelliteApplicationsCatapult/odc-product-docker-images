@@ -4,24 +4,17 @@
 # Data uploader #
 #################
 
-def upload_data(ds, type, bands, **kwargs):
+def save_data(ds, type, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, bucket='public-eo-data', prefix='luigi', **kwargs):
 
     from export import s3_export_xarray_to_geotiff
 
-    bucket = 'public-eo-data'
-    prefix = 'luigi'
-
-    product = kwargs.get('product')
     pn = product[0:3] if product.startswith('ls') else product[0:2]
-    tf = kwargs.get('time_from')
-    tt = kwargs.get('time_to')
-    xf = kwargs.get('longitude_from')
-    xt = kwargs.get('longitude_to')
-    yf = kwargs.get('latitude_from')
-    yt = kwargs.get('latitude_to')
 
     for band in bands:
-        s3_export_xarray_to_geotiff(ds, band, bucket, f"{prefix}/{pn}_{type}_{tf}_{tt}_epsg3460_{xf}_{xt}_{yf}_{yt}_{band}.tif")
+        s3_export_xarray_to_geotiff(ds,
+                                    band,
+                                    bucket,
+                                    f"{prefix}/{pn}_{type}_{time_from}_{time_to}_epsg4326_{longitude_from}_{longitude_to}_{latitude_from}_{latitude_to}_{band}.tif")
 
 
 ###################
@@ -38,7 +31,7 @@ def process_request(dc, client, type, **kwargs):
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
-            upload_data(ds=ds, type=type, bands=save_bands, **kwargs)
+            save_data(ds=ds, type=type, bands=save_bands, **kwargs)
 
     except Exception as e:
         print("Error: " + str(e))
