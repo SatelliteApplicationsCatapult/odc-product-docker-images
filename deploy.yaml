@@ -32,10 +32,16 @@ spec:
     spec:
       containers:
       - name: odc-worker
-        image: satapps/odc-products:0.0.1
+        image: satapps/odc-products:0.0.5
         env:
         - name: EXTRA_PIP_PACKAGES
           value: "Cython hdstats odc-algo --extra-index-url=https://packages.dea.ga.gov.au"
+        - name: AWS_NO_SIGN_REQUEST  # This option might be used for buckets with public access rights. Available since GDAL 2.3.
+          value: "YES"
+        - name: AWS_VIRTUAL_HOSTING
+          value: "FALSE"
+        - name: AWS_S3_ENDPOINT
+          value: "s3-uk-1.sa-catapult.co.uk"
         volumeMounts:
         - mountPath: /etc/datacube.conf
           name: datacube-conf
