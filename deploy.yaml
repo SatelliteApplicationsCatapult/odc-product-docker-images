@@ -33,6 +33,9 @@ spec:
       containers:
       - name: odc-worker
         image: satapps/odc-products:0.0.1
+        env:
+        - name: EXTRA_PIP_PACKAGES
+          value: "Cython hdstats odc-algo --extra-index-url=https://packages.dea.ga.gov.au"
         volumeMounts:
         - mountPath: /etc/datacube.conf
           name: datacube-conf
