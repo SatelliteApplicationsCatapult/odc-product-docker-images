@@ -4,18 +4,13 @@
 # Geometric median #
 ####################
 
-def process_geomedian(product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
+def process_geomedian(client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
     import numpy as np
     import xarray as xr
 
     import hdstats
     import odc.algo
     from odc.algo import to_f32, from_float, xr_geomedian
-
-    import dask
-
-    from dask.distributed import Client
-    client = Client('dask-scheduler.dask.svc.cluster.local:8786')
 
     from datacube import Datacube
 
@@ -96,7 +91,6 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
                       num_threads=1,  # disable internal threading, dask will run several concurrently
                       eps=0.2*scale,  # 1/5 pixel value resolution
                       nocheck=True)   # disable some checks inside geomedian library that use too much ram
-
     yy = from_float(yy, 
                     dtype='int16', 
                     nodata=0, 
@@ -105,15 +99,25 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
 
     yy = yy.compute()
 
-    client.restart()
-
 ###################
 # Request handler #
 ###################
 
 def process_request(type, **kwargs):
-    if type == "geomedian":
-        process_geomedian(**kwargs)
+    import dask
+
+    from dask.distributed import Client
+    client = Client('dask-scheduler.dask.svc.cluster.local:8786')
+
+    try:
+        if type == "geomedian":
+            process_geomedian(client=client, **kwargs)
+
+    except Exception as e:
+        print("Error: " + str(e))
+
+    finally:
+        client.restart()
 
 ######################
 # Product generation #
