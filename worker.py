@@ -12,9 +12,9 @@ def process_request(type):
     import odc.algo
     import dask
 
-    #from dask.distributed import Client
-    #client = Client('dask-scheduler.dask.svc.cluster.local:8786')
-    #client
+    from dask.distributed import Client
+    client = Client('dask-scheduler.dask.svc.cluster.local:8786')
+    client
 
     from datacube import Datacube
     from odc.algo import to_f32, from_float, xr_geomedian
@@ -82,6 +82,8 @@ def process_request(type):
                     offset=-offset/scale)
 
     yy = yy.compute()
+
+    client.restart()
 
 ######################
 # Product generation #
