@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: odc-worker
-        image: satapps/odc-products
+        image: satapps/odc-products:0.0.1
         volumeMounts:
         - mountPath: /etc/datacube.conf
           name: datacube-conf
