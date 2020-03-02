@@ -22,8 +22,10 @@ def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude
 
     if product.startswith('ls'):
         resolution = (-30, 30)
+        group_by='solar_day'
     else:
         resolution = (-10, 10)
+        group_by='time'
 
     xx = dc.load(product=product,
                  time=time_extents,
@@ -33,7 +35,7 @@ def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude
                  resolution=resolution,
                  #align=(15, 15),
                  measurements=data_bands + mask_bands,
-                 group_by='solar_day',
+                 group_by=group_by,
                  dask_chunks=dict(
                      x=1000,
                      y=1000)
