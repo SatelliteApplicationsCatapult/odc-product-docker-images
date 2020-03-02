@@ -18,3 +18,29 @@ data:
 
     # A blank password will fall back to default postgres driver authentication, such as reading your ~/.pgpass file.
     db_password: localuser1234
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: odc-products
+  namespace: odc-routine-products
+spec:
+  parallelism: 1
+  template:
+    metadata:
+      name: odc-worker
+    spec:
+      containers:
+      - name: odc-worker
+        image: satapps/odc-products
+        volumeMounts:
+        - mountPath: /etc/datacube.conf
+          name: datacube-conf
+          subPath: datacube.conf
+      restartPolicy: Never
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: datacube-conf
+        name: datacube-conf
+
