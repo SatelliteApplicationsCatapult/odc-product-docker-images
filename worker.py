@@ -8,14 +8,16 @@ def process_geomedian(product, latitude_from, latitude_to, longitude_from, longi
     import numpy as np
     import xarray as xr
 
-    from datacube import Datacube
-    from hdstats import xr_geomedian
+    import hdstats
+    import odc.algo
     from odc.algo import to_f32, from_float, xr_geomedian
 
     import dask
 
     from dask.distributed import Client
     client = Client('dask-scheduler.dask.svc.cluster.local:8786')
+
+    from datacube import Datacube
 
     dc = Datacube()
 
