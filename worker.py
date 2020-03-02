@@ -64,6 +64,8 @@ def save_data(ds, type, bands, product, time_from, time_to, output_crs, bucket='
 ###################
 
 def process_request(dc, client, type, **kwargs):
+    import gc
+
     try:
         if type == "geomedian":
             from geomedian import process_geomedian
@@ -78,6 +80,10 @@ def process_request(dc, client, type, **kwargs):
         print("Error: " + str(e))
 
     finally:
+        if ds:
+            del ds
+            gc.collect()
+
         client.restart()
 
 
