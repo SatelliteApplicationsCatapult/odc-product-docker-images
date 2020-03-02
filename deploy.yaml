@@ -32,14 +32,14 @@ spec:
     spec:
       containers:
       - name: odc-worker
-        image: satapps/odc-products:0.0.20
+        image: satapps/odc-products:0.0.34
         env:
         - name: EXTRA_PIP_PACKAGES
-          value: "Cython hdstats odc-algo --extra-index-url=https://packages.dea.ga.gov.au"
+          value: "Cython lark-parser hdstats odc-algo --extra-index-url=https://packages.dea.ga.gov.au"
         - name: PYTHONUNBUFFERED
           value: "0"
-        - name: AWS_NO_SIGN_REQUEST  # This option might be used for buckets with public access rights. Available since GDAL 2.3.
-          value: "YES"
+        #- name: AWS_NO_SIGN_REQUEST  # This option might be used for buckets with public access rights. Available since GDAL 2.3.
+        #  value: "YES"
         - name: AWS_VIRTUAL_HOSTING
           value: "FALSE"
         - name: AWS_S3_ENDPOINT
