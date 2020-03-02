@@ -4,12 +4,13 @@
 # Geometric median #
 ####################
 
-def process_request(type):
+def process_geomedian(product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, **kwargs):
     import numpy as np
     import xarray as xr
 
     import hdstats
     import odc.algo
+
     import dask
 
     from dask.distributed import Client
@@ -21,21 +22,18 @@ def process_request(type):
 
     dc = Datacube()
 
-    product = 'ls7_usgs_sr_scene'
+    #product = 'ls7_usgs_sr_scene'
 
     # Sub-region selection - e.g. the city of Suva
-    latitude = (-18.2316, -18.0516)
-    longitude = (178.2819, 178.6019)
+    #latitude = (-18.2316, -18.0516)
+    #longitude = (178.2819, 178.6019)
+    latitude = (float(latitude_from), float(latitude_to))
+    longitude = (float(longitude_from), float(longitude_to))
 
     #time_extents = ('1999-01-01', '2005-01-01')
-    time_extents = '2004'
+    time_extents = (time_from, time_to)
 
-    #dss = dc.find_datasets(product=product,
-    #                       time=time_extents,
-    #                       lat=latitude,
-    #                       lon=longitude)
-
-    data_bands = ['red', 'green', 'blue']
+    data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
     mask_bands = ['pixel_qa']
 
     output_crs = 'EPSG:3460'
@@ -86,6 +84,14 @@ def process_request(type):
 
     client.restart()
 
+###################
+# Request handler #
+###################
+
+def process_request(type, **kwargs):
+    if type == "geomedian":
+        process_geomedian(**kwargs)
+
 ######################
 # Product generation #
 ######################
@@ -110,7 +116,7 @@ print("Worker with sessionID: " +  q.sessionID())
 print("Initial queue state: empty=" + str(q.empty()))
 
 while not q.empty():
-  item = q.lease(lease_secs=1800, block=True, timeout=1200) 
+  item = q.lease(lease_secs=1800, block=True, timeout=600) 
   if item is not None:
     itemstr = item.decode("utf=8")
     print("Working on " + itemstr)
