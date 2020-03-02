@@ -4,16 +4,7 @@
 # Request handler #
 ###################
 
-def process_request(type, **kwargs):
-    from datacube import Datacube
-
-    dc = Datacube()
-
-    import dask
-    from dask.distributed import Client
-
-    client = Client('dask-scheduler.dask.svc.cluster.local:8786')
-
+def process_request(dc, client, type, **kwargs):
     try:
         if type == "geomedian":
             from geomedian import process_geomedian
@@ -32,9 +23,9 @@ def process_request(type, **kwargs):
 
 import json
 
-def process_job(json_data):
+def process_job(dc, client, json_data):
     loaded_json = json.loads(json_data)
-    process_request(**loaded_json)
+    process_request(dc, client, **loaded_json)
 
 ##################
 # Job processing #
@@ -49,13 +40,22 @@ q = rediswq.RedisWQ(name="jobProduct", host=host)
 print("Worker with sessionID: " +  q.sessionID())
 print("Initial queue state: empty=" + str(q.empty()))
 
+from datacube import Datacube
+
+dc = Datacube()
+
+import dask
+from dask.distributed import Client
+
+client = Client('dask-scheduler.dask.svc.cluster.local:8786')
+
 while not q.empty():
   item = q.lease(lease_secs=1800, block=True, timeout=600) 
   if item is not None:
     itemstr = item.decode("utf=8")
     print("Working on " + itemstr)
     #time.sleep(10) # Put your actual work here instead of sleep.
-    process_job(itemstr)
+    process_job(dc, client, itemstr)
     q.complete(item)
   else:
     print("Waiting for work")
