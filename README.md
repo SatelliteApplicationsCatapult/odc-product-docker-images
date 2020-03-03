@@ -37,7 +37,7 @@ EOF
 exit
 ```
 
-Start the worker job
+Deploy the worker:
 
 ```bash
 kubectl apply -f deploy.yaml; kubectl get pods -n $NAMESPACE
