@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: odc-worker
-        image: satapps/odc-products:0.0.57
+        image: satapps/odc-products:0.0.60
         env:
         - name: EXTRA_PIP_PACKAGES
           value: "Cython lark-parser hdstats odc-algo --extra-index-url=https://packages.dea.ga.gov.au"
