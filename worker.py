@@ -4,7 +4,7 @@
 # Data uploader #
 #################
 
-def save_data(ds, type, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_data(ds, product_type, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
     from os.path import basename
     from export import export_xarray_to_geotiff
     from s3 import s3_upload_file
@@ -20,7 +20,7 @@ def save_data(ds, type, bands, product, time_from, time_to, output_crs, bucket='
     crs = output_crs.lower().replace(':', '')
 
     for band in bands:
-        destination = f"{prefix}/{pn}_{type}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
+        destination = f"{prefix}/{pn}_{product_type}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
         fname = basename(destination)
 
         export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
@@ -39,18 +39,18 @@ def save_data(ds, type, bands, product, time_from, time_to, output_crs, bucket='
 # Request handler #
 ###################
 
-def process_request(dc, client, type, **kwargs):
+def process_request(dc, client, product_type, **kwargs):
     import gc
 
     try:
-        if type == "geomedian":
+        if product_type == "geomedian":
             from geomedian import process_geomedian
 
             ds = process_geomedian(dc=dc, client=client, **kwargs)
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
-            save_data(ds=ds, type=type, bands=save_bands, **kwargs)
+            save_data(ds=ds, product_type=product_type, bands=save_bands, **kwargs)
 
     except Exception as e:
         print("Error: " + str(e))
