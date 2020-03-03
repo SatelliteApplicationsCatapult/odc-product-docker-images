@@ -62,7 +62,7 @@ docker login docker.io
 Build and upload:
 
 ```
-VERSION=0.0.61
+VERSION=0.0.62
 
 docker build . -t satapps/odc-products:${VERSION}
 docker push satapps/odc-products:${VERSION}
