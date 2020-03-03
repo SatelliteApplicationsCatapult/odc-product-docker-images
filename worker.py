@@ -4,7 +4,7 @@
 # Data uploader #
 #################
 
-def save_data(ds, product_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
     from os.path import basename
     from export import export_xarray_to_geotiff
     from s3 import s3_upload_file
@@ -20,7 +20,7 @@ def save_data(ds, product_code, bands, product, time_from, time_to, output_crs, 
     crs = output_crs.lower().replace(':', '')
 
     for band in bands:
-        destination = f"{prefix}/{pn}_{product_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
+        destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
         fname = basename(destination)
 
         export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
@@ -39,7 +39,7 @@ def save_data(ds, product_code, bands, product, time_from, time_to, output_crs, 
 # Metadata uploader #
 #####################
 
-def save_metadata(ds, product_code, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
     import os
     from os.path import basename
     from metadata import generate_datacube_metadata
@@ -69,14 +69,14 @@ def save_metadata(ds, product_code, bands, product, time_from, time_to, longitud
         platform = 'SENTINEL_2'
         instrument = 'MSI'
 
-    band_base_name = f"{pn}_{product_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}"
+    band_base_name = f"{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}"
 
-    destination = f"{prefix}/{pn}_{product_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_datacube-metadata.yaml"
+    destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_datacube-metadata.yaml"
     fname = basename(destination)
 
     metadata_obj_key = f"s3://{bucket}/{destination}"
 
-    if product_code == 'geomedian':
+    if job_code == 'geomedian':
         doc = generate_datacube_metadata(ds,
                                          bands,
                                          metadata_obj_key,
@@ -110,19 +110,19 @@ def save_metadata(ds, product_code, bands, product, time_from, time_to, longitud
 # Request handler #
 ###################
 
-def process_request(dc, client, product_code, **kwargs):
+def process_request(dc, client, job_code, **kwargs):
     import gc
 
     try:
-        if product_code == "geomedian":
+        if job_code == "geomedian":
             from geomedian import process_geomedian
 
             ds = process_geomedian(dc=dc, client=client, **kwargs)
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
-            save_data(ds=ds, product_code=product_code, bands=save_bands, **kwargs)
-            save_metadata(ds=ds, product_code=product_code, bands=save_bands, **kwargs)
+            save_data(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
+            save_metadata(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
 
     except Exception as e:
         print("Error: " + str(e))
