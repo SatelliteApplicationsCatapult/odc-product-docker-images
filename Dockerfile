@@ -8,6 +8,8 @@ COPY export.py /export.py
 
 COPY geomedian.py /geomedian.py
 
+COPY metadata.py /metadata.py
+
 COPY worker.py /worker.py
 
 COPY rediswq.py /rediswq.py
