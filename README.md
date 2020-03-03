@@ -37,6 +37,8 @@ EOF
 exit
 ```
 
+A programmatic job insertion method is discussed [here](https://github.com/SatelliteApplicationsCatapult/ard-docker-images/tree/master/job-insert#using-kubernetes). 
+
 Deploy the worker:
 
 ```bash
