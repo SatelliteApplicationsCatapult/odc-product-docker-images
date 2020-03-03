@@ -4,29 +4,17 @@
 # S3 uploader #
 ###############
 
-def s3_upload_band_file(ds, band, no_data, output_crs, bucket, prefix):
+def s3_upload_band_file(ds, band, no_data, output_crs, bucket, destination):
     from os.path import basename
     from export import export_xarray_to_geotiff
-    import boto3
+    from s3 import s3_upload_file
 
-    fname = basename(prefix)
+    fname = basename(destination)
 
     export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
-    #export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data)
 
     try:
-        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID")
-        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
-        aws_s3_endpoint=os.getenv("AWS_S3_ENDPOINT")
-
-        endpoint_url=f"http://{aws_s3_endpoint}"
-
-        s3 = boto3.client('s3',
-                          aws_access_key_id=aws_access_key_id,
-                          aws_secret_access_key=aws_secret_access_key,
-                          endpoint_url=endpoint_url)
-
-        s3.upload_file(fname, bucket, prefix)
+        s3_upload_file(fname, bucket, destination);
 
     except Exception as e:
         print("Error: " + str(e))
