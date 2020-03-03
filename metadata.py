@@ -8,8 +8,7 @@ def generate_datacube_metadata(ds, bands, metadata_obj_key, band_base_name, prod
         'image': {
             'bands': {
                 band: {
-                    'path': f"{band_base_name}_{band}.tif",
-                    'layer': '1',
+                    'path': f"{band_base_name}_{band}.tif"
                 } for band in bands
             }
         },
