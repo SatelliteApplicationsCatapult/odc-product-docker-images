@@ -1,7 +1,7 @@
 # ODC Product Docker Images
 Docker images to routinely create ODC products with Kubernetes.
 
-:warning: A Helm cart to deploy the routine product generation stack is yet to be worked at :warning:
+:warning: A Helm chart to deploy the routine product generation stack is yet to be worked at :warning:
 
 ## TL;DR
 
