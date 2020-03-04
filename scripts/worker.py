@@ -5,6 +5,7 @@
 #################
 
 def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+    import os
     from os.path import basename
     from export import export_xarray_to_geotiff
     from s3 import s3_upload_file
@@ -139,26 +140,31 @@ def process_request(dc, client, job_code, **kwargs):
 # Product generation #
 ######################
 
-import json
-
 def process_job(dc, client, json_data):
+    import json
+    from datetime import datetime
+
     loaded_json = json.loads(json_data)
 
     try:
+        print("Start time: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
         process_request(dc, client, **loaded_json)
 
     except Exception as e:
         print("Error: " + str(e))
+
+    finally:
+        print("End time: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
 
 ##################
 # Job processing #
 ##################
 
-import rediswq
-
 import os
 host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
+
+import rediswq
 
 q = rediswq.RedisWQ(name="jobProduct", host=host)
 print("Worker with sessionID: " +  q.sessionID())
