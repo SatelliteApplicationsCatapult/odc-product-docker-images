@@ -1,0 +1,235 @@
+name: ls8_epsg3460_geomedian_annual
+description: Landsat 8 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: OLI
+    platform:
+        code: LANDSAT_8
+    product_type: surface_reflectance_statistical_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: blue
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: green
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: red
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: nir
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir1
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir2
+        nodata: -9999
+        units: 'reflectance'
+
+storage:
+    crs: 'EPSG:3460'
+    dimension_order:
+        - time
+        - y
+        - x
+    driver: GeoTIFF
+    resolution:
+        y: -30
+        x: 30
+
+---
+name: ls7_epsg3460_geomedian_annual
+description: Landsat 7 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: ETM
+    platform:
+        code: LANDSAT_7
+    product_type: surface_reflectance_statistical_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: blue
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: green
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: red
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: nir
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir1
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir2
+        nodata: -9999
+        units: 'reflectance'
+
+storage:
+    crs: 'EPSG:3460'
+    dimension_order:
+        - time
+        - y
+        - x
+    driver: GeoTIFF
+    resolution:
+        y: -30
+        x: 30
+
+---
+name: ls5_epsg3460_geomedian_annual
+description: Landsat 5 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: TM
+    platform:
+        code: LANDSAT_5
+    product_type: surface_reflectance_statistical_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: blue
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: green
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: red
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: nir
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir1
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir2
+        nodata: -9999
+        units: 'reflectance'
+
+storage:
+    crs: 'EPSG:3460'
+    dimension_order:
+        - time
+        - y
+        - x
+    driver: GeoTIFF
+    resolution:
+        y: -30
+        x: 30
+
+---
+name: ls4_epsg3460_geomedian_annual
+description: Landsat 4 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: TM
+    platform:
+        code: LANDSAT_4
+    product_type: surface_reflectance_statistical_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: blue
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: green
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: red
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: nir
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir1
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir2
+        nodata: -9999
+        units: 'reflectance'
+
+storage:
+    crs: 'EPSG:3460'
+    dimension_order:
+        - time
+        - y
+        - x
+    driver: GeoTIFF
+    resolution:
+        y: -30
+        x: 30
+
