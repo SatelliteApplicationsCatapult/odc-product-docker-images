@@ -122,7 +122,9 @@ def process_request(dc, client, job_code, **kwargs):
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
+            print("Saving data...")
             save_data(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
+            print("Saving metadata...")
             save_metadata(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
 
     except Exception as e:
@@ -131,8 +133,7 @@ def process_request(dc, client, job_code, **kwargs):
     finally:
         if ds:
             del ds
-            gc.collect()
-
+        gc.collect()
         client.restart()
 
 
