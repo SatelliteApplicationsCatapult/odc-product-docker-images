@@ -38,7 +38,7 @@ def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude
                      y=1000)
                 )
 
-    if len(xx.time) == 0:
+    if len(xx.dims) == 0 or len(xx.data_vars) == 0:
         return None
 
     scale, offset = (1/10_000, 0)  # differs per product, aim for 0-1 values in float32
