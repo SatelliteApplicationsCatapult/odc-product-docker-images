@@ -137,9 +137,9 @@ def process_request(dc, client, job_code, **kwargs):
         client.restart()
 
 
-######################
-# Product generation #
-######################
+#################
+# Job processor #
+#################
 
 def process_job(dc, client, json_data):
     import json
@@ -158,38 +158,38 @@ def process_job(dc, client, json_data):
         print("End time: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
 
 
-##################
-# Job processing #
-##################
+##########
+# Worker #
+##########
 
-import os
-host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
+def worker():
+    import os
+    import rediswq
+    from datacube import Datacube
+    from dask.distributed import Client
 
-import rediswq
+    host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
+    q = rediswq.RedisWQ(name="jobProduct", host=host)
+    print("Worker with sessionID: " +  q.sessionID())
+    print("Initial queue state: empty=" + str(q.empty()))
 
-q = rediswq.RedisWQ(name="jobProduct", host=host)
-print("Worker with sessionID: " +  q.sessionID())
-print("Initial queue state: empty=" + str(q.empty()))
+    host = os.getenv("DASK_SCHEDULER_HOST", "dask-scheduler.dask.svc.cluster.local")
+    client = Client(f"{host}:8786")
+    print(client)
 
-from datacube import Datacube
+    dc = Datacube()
 
-dc = Datacube()
+    while not q.empty():
+      item = q.lease(lease_secs=1800, block=True, timeout=600)
+      if item is not None:
+        itemstr = item.decode("utf=8")
+        print("Working on " + itemstr)
+        process_job(dc, client, itemstr)
+        q.complete(item)
+      else:
+        print("Waiting for work")
 
-import dask
-from dask.distributed import Client
+    print("Queue empty, exiting")
 
-client = Client('dask-scheduler.dask.svc.cluster.local:8786')
-
-while not q.empty():
-  item = q.lease(lease_secs=1800, block=True, timeout=600) 
-  if item is not None:
-    itemstr = item.decode("utf=8")
-    print("Working on " + itemstr)
-    #time.sleep(10) # Put your actual work here instead of sleep.
-    process_job(dc, client, itemstr)
-    q.complete(item)
-  else:
-    print("Waiting for work")
-
-print("Queue empty, exiting")
-
+if __name__ == '__main__':
+    worker()
