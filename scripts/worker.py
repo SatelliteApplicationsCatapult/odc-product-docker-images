@@ -143,7 +143,12 @@ import json
 
 def process_job(dc, client, json_data):
     loaded_json = json.loads(json_data)
-    process_request(dc, client, **loaded_json)
+
+    try:
+        process_request(dc, client, **loaded_json)
+
+    except Exception as e:
+        print("Error: " + str(e))
 
 
 ##################
