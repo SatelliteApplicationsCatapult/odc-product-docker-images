@@ -15,7 +15,7 @@ RELEASEREDIS=redis
 helm upgrade --install $RELEASEREDIS stable/redis \
   --namespace $NAMESPACE \
   --version 9.1.3 \
-  --values values-redis.yaml
+  --values k8s/helm/values-redis.yaml
 ```
 
 Add product generation jobs e.g.:
@@ -29,10 +29,6 @@ rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "lat
 rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2017-01-01", "time_to": "2017-12-31", "output_crs": "EPSG:3460"}'
 rpush jobProduct '{"job_code": "geomedian", "product": "ls7_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2005-01-01", "time_to": "2005-12-31", "output_crs": "EPSG:3460"}'
 rpush jobProduct '{"job_code": "geomedian", "product": "ls5_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "1991-01-01", "time_to": "1991-12-31", "output_crs": "EPSG:3460"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2019-01-01", "time_to": "2019-12-31", "output_crs": "EPSG:32760"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2017-01-01", "time_to": "2017-12-31", "output_crs": "EPSG:32760"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls7_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2005-01-01", "time_to": "2005-12-31", "output_crs": "EPSG:32760"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls5_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "1991-01-01", "time_to": "1991-12-31", "output_crs": "EPSG:32760"}'
 EOF
 exit
 ```
@@ -42,7 +38,7 @@ A programmatic job insertion method is discussed [here](https://github.com/Satel
 Deploy the worker:
 
 ```bash
-kubectl apply -f deploy.yaml; kubectl get pods -n $NAMESPACE
+kubectl apply -f k8s/deploy.yaml; kubectl get pods -n $NAMESPACE
 ```
 
 ## Building and pushing to Docker Hub
