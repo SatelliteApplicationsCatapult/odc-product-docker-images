@@ -2,16 +2,16 @@ FROM luigidifraia/dask-datacube:v1.1.0-alpha
 
 LABEL maintainer="Luigi Di Fraia"
 
-COPY s3.py /s3.py
+COPY scripts/s3.py /s3.py
 
-COPY export.py /export.py
+COPY scripts/export.py /export.py
 
-COPY geomedian.py /geomedian.py
+COPY scripts/geomedian.py /geomedian.py
 
-COPY metadata.py /metadata.py
+COPY scripts/metadata.py /metadata.py
 
-COPY worker.py /worker.py
+COPY scripts/worker.py /worker.py
 
-COPY rediswq.py /rediswq.py
+COPY scripts/rediswq.py /rediswq.py
 
 CMD [ "python", "worker.py" ]
