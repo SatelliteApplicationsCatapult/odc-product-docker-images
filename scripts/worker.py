@@ -4,7 +4,7 @@
 # Data uploader #
 #################
 
-def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', wgs84_naming=True, **kwargs):
     import os
     from os.path import basename
     from export import export_xarray_to_geotiff
@@ -13,10 +13,16 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
 
-    x_from = float(ds['x'][0])
-    x_to = float(ds['x'][-1])
-    y_from = float(ds['y'][0])
-    y_to = float(ds['y'][-1])
+    if wgs84_naming == True:
+        x_from = kwargs.get('longitude_from')
+        x_to = kwargs.get('longitude_to')
+        y_from = kwargs.get('latitude_from')
+        y_to = kwargs.get('latitude_to')
+    else:
+        x_from = float(ds['x'][0])
+        x_to = float(ds['x'][-1])
+        y_from = float(ds['y'][0])
+        y_to = float(ds['y'][-1])
 
     crs = output_crs.lower().replace(':', '')
 
@@ -40,7 +46,7 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
 # Metadata uploader #
 #####################
 
-def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, bucket='public-eo-data', prefix='luigi', **kwargs):
+def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, bucket='public-eo-data', prefix='luigi', wgs84_naming=True, **kwargs):
     import os
     from os.path import basename
     from metadata import generate_datacube_metadata
@@ -50,10 +56,16 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
 
-    x_from = float(ds['x'][0])
-    x_to = float(ds['x'][-1])
-    y_from = float(ds['y'][0])
-    y_to = float(ds['y'][-1])
+    if wgs84_naming == True:
+        x_from = longitude_from
+        x_to = longitude_to
+        y_from = latitude_from
+        y_to = latitude_to
+    else:
+        x_from = float(ds['x'][0])
+        x_to = float(ds['x'][-1])
+        y_from = float(ds['y'][0])
+        y_to = float(ds['y'][-1])
 
     crs = output_crs.lower().replace(':', '')
 
