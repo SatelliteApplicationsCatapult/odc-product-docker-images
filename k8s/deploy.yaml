@@ -26,10 +26,15 @@ metadata:
   namespace: odc-routine-products
 spec:
   parallelism: 1
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       name: odc-worker
     spec:
+      initContainers:
+      - name: init-worker
+        image: busybox:1.28
+        command: ['sh', '-c', 'until nslookup redis-master; do echo Waiting for redis-master; sleep 2; done;']
       containers:
       - name: odc-worker
         image: satapps/odc-products:0.0.61
@@ -58,4 +63,3 @@ spec:
           defaultMode: 420
           name: datacube-conf
         name: datacube-conf
-
