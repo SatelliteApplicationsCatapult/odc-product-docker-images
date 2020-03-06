@@ -2,6 +2,13 @@ FROM luigidifraia/dask-datacube:v1.1.0-alpha
 
 LABEL maintainer="Luigi Di Fraia"
 
+RUN pip install --quiet \
+    Cython \
+    hdstats \
+    lark-parser \
+    odc-algo \
+    --extra-index-url=https://packages.dea.ga.gov.au
+
 COPY scripts/s3.py /s3.py
 
 COPY scripts/export.py /export.py
