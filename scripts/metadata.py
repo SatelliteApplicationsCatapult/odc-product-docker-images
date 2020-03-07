@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 import yaml
 
-def generate_datacube_metadata(ds, bands, metadata_obj_key, band_base_name, product_type, platform, instrument, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, x_from, x_to, y_from, y_to, **kwargs):
+def generate_datacube_metadata(metadata_obj_key, bands, band_base_name, product_type, platform, instrument, time_from, time_to, longitude_from, longitude_to, latitude_from, latitude_to, output_crs, x_from, x_to, y_from, y_to, **kwargs):
     doc = {
         'id': str(uuid.uuid5(uuid.NAMESPACE_URL, metadata_obj_key)),
         'image': {

@@ -1,6 +1,17 @@
-#!/usr/bin/env python
-
 import logging
+
+#########
+# Utils #
+#########
+
+def get_ds_extents(ds):
+    x_from = float(ds['x'][0])
+    x_to = float(ds['x'][-1])
+    y_from = float(ds['y'][0])
+    y_to = float(ds['y'][-1])
+
+    return x_from, x_to, y_from, y_to
+
 
 #################
 # Data uploader #
@@ -21,10 +32,7 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
         y_from = kwargs.get('latitude_from')
         y_to = kwargs.get('latitude_to')
     else:
-        x_from = float(ds['x'][0])
-        x_to = float(ds['x'][-1])
-        y_from = float(ds['y'][0])
-        y_to = float(ds['y'][-1])
+        x_from, x_to, y_from, y_to = get_ds_extents(ds)
 
     crs = output_crs.lower().replace(':', '')
 
@@ -65,10 +73,7 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
         y_from = latitude_from
         y_to = latitude_to
     else:
-        x_from = float(ds['x'][0])
-        x_to = float(ds['x'][-1])
-        y_from = float(ds['y'][0])
-        y_to = float(ds['y'][-1])
+        x_from, x_to, y_from, y_to = get_ds_extents(ds)
 
     crs = output_crs.lower().replace(':', '')
 
@@ -94,15 +99,11 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
 
     metadata_obj_key = f"s3://{bucket}/{destination}"
 
-    x_from = float(ds['x'][0])
-    x_to = float(ds['x'][-1])
-    y_from = float(ds['y'][0])
-    y_to = float(ds['y'][-1])
+    x_from, x_to, y_from, y_to = get_ds_extents(ds)
 
     if job_code == 'geomedian':
-        doc = generate_datacube_metadata(ds,
+        doc = generate_datacube_metadata(metadata_obj_key,
                                          bands,
-                                         metadata_obj_key,
                                          band_base_name,
                                          'surface_reflectance_statistical_summary',
                                          platform,
