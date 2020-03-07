@@ -1,7 +1,8 @@
 # ODC Product Docker Images
-Docker images to routinely create ODC products with Kubernetes.
 
-:warning: A Helm chart to deploy the routine product generation stack is yet to be worked at :warning:
+Docker image to routinely generate summary EO products with [Kubernetes](https://kubernetes.io/) and [Dask](https://dask.org/). [Open Data Cube](https://www.opendatacube.org/) YAML metadata is also created as part of the process.
+
+:warning: A Helm chart to deploy the routine product generation stack (Redis and worker Pods) is yet to be worked at :warning:
 
 ## TL;DR
 
