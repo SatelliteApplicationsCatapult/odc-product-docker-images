@@ -39,8 +39,17 @@ A programmatic job insertion method is discussed [here](https://github.com/Satel
 Deploy the worker within the same Kubernetes namespace:
 
 ```bash
+sed -i "s/namespace:.*/namespace: $NAMESPACE/" k8s/deploy.yaml
+
+if [ ! "${RELEASEREDIS}" = "redis" ]; then
+  REDIS_SERVICE_HOST=${RELEASEREDIS}-redis-master
+  sed -i "s/redis-master/${REDIS_SERVICE_HOST}/g" k8s/deploy.yaml
+fi
+
 kubectl apply -f k8s/deploy.yaml
 ```
+
+Note: your Dask scheduler host is expected to be resolvable as `dask-scheduler.dask.svc.cluster.local`. In case your Dask cluster was deployed in a different Kubernetes namespace, simply amend the value of the `DASK_SCHEDULER_HOST` variable accordingly in k8s/deploy.yaml.
 
 ## Building and pushing to Docker Hub
 
