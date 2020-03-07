@@ -1,6 +1,6 @@
 # ODC Product Docker Images
 
-Docker image to routinely generate summary EO products with [Kubernetes](https://kubernetes.io/) and [Dask](https://dask.org/). [Open Data Cube](https://www.opendatacube.org/) YAML metadata is also created as part of the process.
+Docker image to routinely generate summary EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/) within a [Kubernetes](https://kubernetes.io/) platform. YAML metadata for indexing into the Open Data Cube is also created as part of the process.
 
 :warning: A Helm chart to deploy the routine product generation stack (Redis and worker Pods) is yet to be worked at :warning:
 
@@ -49,7 +49,16 @@ fi
 kubectl apply -f k8s/deploy.yaml
 ```
 
-Note: the Dask scheduler host is expected to be resolvable as `dask-scheduler.dask.svc.cluster.local`. In case your Dask cluster was deployed in a different Kubernetes namespace, simply amend the value of the `DASK_SCHEDULER_HOST` variable accordingly in [k8s/deploy.yaml](k8s/deploy.yaml).
+Clean up with:
+
+```bash
+helm delete $RELEASEREDIS --purge
+kubectl delete -f k8s/deploy.yaml
+```
+
+## Notes
+- DB connection settings for the Open Data Cube are stored in a Kubernetes ConfigMap defined in [k8s/deploy.yaml](k8s/deploy.yaml)
+- the Dask scheduler host is expected to be resolvable as `dask-scheduler.dask.svc.cluster.local`. In case your Dask cluster was deployed in a different Kubernetes namespace, simply amend the value of the `DASK_SCHEDULER_HOST` variable accordingly in [k8s/deploy.yaml](k8s/deploy.yaml).
 
 ## Building and pushing to Docker Hub
 
@@ -72,13 +81,6 @@ VERSION=0.0.71
 
 docker build . -t satapps/odc-products:${VERSION}
 docker push satapps/odc-products:${VERSION}
-```
-
-## Cleaning up
-
-```bash
-helm delete $RELEASEREDIS --purge
-kubectl delete -f k8s/deploy.yaml
 ```
 
 ## TODO
