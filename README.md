@@ -49,7 +49,7 @@ fi
 kubectl apply -f k8s/deploy.yaml
 ```
 
-Note: your Dask scheduler host is expected to be resolvable as `dask-scheduler.dask.svc.cluster.local`. In case your Dask cluster was deployed in a different Kubernetes namespace, simply amend the value of the `DASK_SCHEDULER_HOST` variable accordingly in k8s/deploy.yaml.
+Note: the Dask scheduler host is expected to be resolvable as `dask-scheduler.dask.svc.cluster.local`. In case your Dask cluster was deployed in a different Kubernetes namespace, simply amend the value of the `DASK_SCHEDULER_HOST` variable accordingly in [k8s/deploy.yaml](k8s/deploy.yaml).
 
 ## Building and pushing to Docker Hub
 
