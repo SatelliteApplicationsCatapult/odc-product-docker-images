@@ -58,7 +58,6 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
     import yaml
 
     pn = product[0:3] if product.startswith('ls') else product[0:2]
-    no_data = -9999 if product.startswith('ls') else 0
 
     if wgs84_naming == True:
         x_from = longitude_from
