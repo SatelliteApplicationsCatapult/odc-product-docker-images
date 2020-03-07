@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import logging
+
 #################
 # Data uploader #
 #################
@@ -30,13 +32,15 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
         destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
         fname = basename(destination)
 
+        logging.debug(fname)
+
         export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
 
         try:
             s3_upload_file(fname, bucket, destination);
 
         except Exception as e:
-            print("Error: " + str(e))
+            logging.error("Unhandled exception %s", e)
 
         finally:
             os.remove(fname)
@@ -87,7 +91,14 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
     destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_datacube-metadata.yaml"
     fname = basename(destination)
 
+    logging.debug(fname)
+
     metadata_obj_key = f"s3://{bucket}/{destination}"
+
+    x_from = float(ds['x'][0])
+    x_to = float(ds['x'][-1])
+    y_from = float(ds['y'][0])
+    y_to = float(ds['y'][-1])
 
     if job_code == 'geomedian':
         doc = generate_datacube_metadata(ds,
@@ -113,7 +124,7 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
             s3_upload_file(fname, bucket, destination);
 
         except Exception as e:
-            print("Error: " + str(e))
+            logging.error("Unhandled exception %s", e)
 
         finally:
             os.remove(fname)
@@ -134,13 +145,13 @@ def process_request(dc, client, job_code, **kwargs):
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
-            print("Saving data...")
+            logging.info("Saving data")
             save_data(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
-            print("Saving metadata...")
+            logging.info("Saving metadata")
             save_metadata(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
 
     except Exception as e:
-        print("Error: " + str(e))
+        logging.error("Unhandled exception %s", e)
 
     finally:
         if ds:
@@ -160,14 +171,14 @@ def process_job(dc, client, json_data):
     loaded_json = json.loads(json_data)
 
     try:
-        print("Start time: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+        #logging.info("Started processing job"))
         process_request(dc, client, **loaded_json)
 
     except Exception as e:
-        print("Error: " + str(e))
+        logging.error("Unhandled exception %s", e)
 
     finally:
-        print("End time: " + datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+        logging.info("Finished processing job")
 
 
 ##########
@@ -180,14 +191,16 @@ def worker():
     from datacube import Datacube
     from dask.distributed import Client
 
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
+
     host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
     q = rediswq.RedisWQ(name="jobProduct", host=host)
-    print("Worker with sessionID: " +  q.sessionID())
-    print("Initial queue state: empty=" + str(q.empty()))
+    logging.info("Worker with sessionID %s", q.sessionID())
+    logging.info("Initial queue state empty=%s", q.empty())
 
     host = os.getenv("DASK_SCHEDULER_HOST", "dask-scheduler.dask.svc.cluster.local")
     client = Client(f"{host}:8786")
-    print(client)
+    logging.info("Dask Distributed with %s", client)
 
     dc = Datacube()
 
@@ -195,13 +208,13 @@ def worker():
       item = q.lease(lease_secs=1800, block=True, timeout=600)
       if item is not None:
         itemstr = item.decode("utf=8")
-        print("Working on " + itemstr)
+        logging.info("Working on %s", itemstr)
         process_job(dc, client, itemstr)
         q.complete(item)
       else:
-        print("Waiting for work")
+        logging.info("Waiting for work")
 
-    print("Queue empty, exiting")
+    logging.info("Queue empty, exiting")
 
 if __name__ == '__main__':
     worker()
