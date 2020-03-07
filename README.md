@@ -73,3 +73,13 @@ VERSION=0.0.71
 docker build . -t satapps/odc-products:${VERSION}
 docker push satapps/odc-products:${VERSION}
 ```
+
+## Cleaning up
+
+```bash
+helm delete $RELEASEREDIS --purge
+kubectl delete -f k8s/deploy.yaml
+```
+
+## TODO
+- Define a Helm chart for templating and value substitution
