@@ -46,10 +46,10 @@ spec:
           #  value: s3fs dask-ml --upgrade
           - name: PYTHONUNBUFFERED
             value: "0"
-          - name: REDIS_SERVICE_HOST
-            value: "redis-master"
-          - name: DASK_SCHEDULER_HOST
-            value: "dask-scheduler.dask.svc.cluster.local"
+          #- name: REDIS_SERVICE_HOST
+          #  value: "redis-master"
+          #- name: DASK_SCHEDULER_HOST
+          #  value: "dask-scheduler.dask.svc.cluster.local"
           #- name: AWS_NO_SIGN_REQUEST  # This option might be used for buckets with public access rights. Available since GDAL 2.3.
           #  value: "YES"
           - name: AWS_ACCESS_KEY_ID
