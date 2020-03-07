@@ -36,10 +36,10 @@ exit
 
 A programmatic job insertion method is discussed [here](https://github.com/SatelliteApplicationsCatapult/ard-docker-images/tree/master/job-insert#using-kubernetes). 
 
-Deploy the worker:
+Deploy the worker within the same Kubernetes namespace:
 
 ```bash
-kubectl apply -f k8s/deploy.yaml; kubectl get pods -n $NAMESPACE
+kubectl apply -f k8s/deploy.yaml
 ```
 
 ## Building and pushing to Docker Hub
