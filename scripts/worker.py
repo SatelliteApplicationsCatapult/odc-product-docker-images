@@ -30,9 +30,9 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
 
     for band in bands:
         destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.tif"
-        fname = basename(destination)
 
-        logging.debug(fname)
+        fname = basename(destination)
+        logging.debug("Saving band file %s.", fname)
 
         export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
 
@@ -88,9 +88,9 @@ def save_metadata(ds, job_code, bands, product, time_from, time_to, longitude_fr
     band_base_name = f"{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}"
 
     destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_datacube-metadata.yaml"
-    fname = basename(destination)
 
-    logging.debug(fname)
+    fname = basename(destination)
+    logging.debug("Saving metadata file %s.", fname)
 
     metadata_obj_key = f"s3://{bucket}/{destination}"
 
@@ -144,9 +144,9 @@ def process_request(dc, client, job_code, **kwargs):
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
-            logging.info("Saving data")
+            logging.info("Saving data.")
             save_data(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
-            logging.info("Saving metadata")
+            logging.info("Saving metadata.")
             save_metadata(ds=ds, job_code=job_code, bands=save_bands, **kwargs)
 
     except Exception as e:
@@ -170,14 +170,14 @@ def process_job(dc, client, json_data):
     loaded_json = json.loads(json_data)
 
     try:
-        #logging.info("Started processing job"))
+        #logging.info("Started processing job."))
         process_request(dc, client, **loaded_json)
 
     except Exception as e:
         logging.error("Unhandled exception %s", e)
 
     finally:
-        logging.info("Finished processing job")
+        logging.info("Finished processing job.")
 
 
 ##########
@@ -194,12 +194,11 @@ def worker():
 
     host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
     q = rediswq.RedisWQ(name="jobProduct", host=host)
-    logging.info("Worker with sessionID %s", q.sessionID())
-    logging.info("Initial queue state empty=%s", q.empty())
+    logging.info("Worker with sessionID %s.", q.sessionID())
+    logging.info("Initial queue state empty=%s.", q.empty())
 
     host = os.getenv("DASK_SCHEDULER_HOST", "dask-scheduler.dask.svc.cluster.local")
     client = Client(f"{host}:8786")
-    logging.info("Dask Distributed with %s", client)
 
     dc = Datacube()
 
@@ -207,13 +206,13 @@ def worker():
       item = q.lease(lease_secs=1800, block=True, timeout=600)
       if item is not None:
         itemstr = item.decode("utf=8")
-        logging.info("Working on %s", itemstr)
+        logging.info("Working on %s.", itemstr)
         process_job(dc, client, itemstr)
         q.complete(item)
       else:
-        logging.info("Waiting for work")
+        logging.info("Waiting for work.")
 
-    logging.info("Queue empty, exiting")
+    logging.info("Queue empty, exiting.")
 
 if __name__ == '__main__':
     worker()
