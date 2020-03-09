@@ -17,7 +17,7 @@ def get_ds_extents(ds):
 # Data uploader #
 #################
 
-def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', wgs84_naming=True, **kwargs):
+def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, bucket='public-eo-data', prefix='luigi', wgs84_naming='True', cogeo_output='True', **kwargs):
     import os
     from os.path import basename
     from export import export_xarray_to_geotiff
@@ -26,7 +26,7 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
 
-    if wgs84_naming == True:
+    if wgs84_naming == 'True':
         x_from = kwargs.get('longitude_from')
         x_to = kwargs.get('longitude_to')
         y_from = kwargs.get('latitude_from')
@@ -43,6 +43,18 @@ def save_data(ds, job_code, bands, product, time_from, time_to, output_crs, buck
         logging.debug("Saving band file %s.", fname)
 
         export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
+
+        if cogeo_output == 'True':
+            import shlex, subprocess
+
+            # TODO: use the Python API directly, albeit memory cleanup might be more effective using subprocess?
+            args = shlex.split(f"rio cogeo create {fname} {fname} --co PREDICTOR=2 --co ZLEVEL=9 --cog-profile deflate --overview-level 5 --overview-resampling average")
+
+            # DONT: don't capture the output from rio cogeo as it is already part of this process's stdout/stderr so it's available in Kubernetes' logs
+            cog_status = subprocess.call(args)
+
+            if cog_status:
+               logging.error("COG conversion failed for file %s.", fname)
 
         try:
             s3_upload_file(fname, bucket, destination);
