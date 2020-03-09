@@ -9,9 +9,7 @@ import hdstats
 import odc.algo
 from odc.algo import to_f32, from_float, xr_geomedian
 
-def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, **kwargs):
-    latitude = (float(latitude_from), float(latitude_to))
-    longitude = (float(longitude_from), float(longitude_to))
+def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
@@ -24,19 +22,35 @@ def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude
         resolution = (-10, 10)
         group_by='time'
 
-    xx = dc.load(product=product,
-                 time=time_extents,
-                 lat=latitude,
-                 lon=longitude,
-                 output_crs=output_crs,
-                 resolution=resolution,
-                 #align=(15, 15),
-                 measurements=data_bands + mask_bands,
-                 group_by=group_by,
-                 dask_chunks=dict(
-                     x=1000,
-                     y=1000)
-                )
+    query = {}
+
+    query['product'] = product
+    query['time'] = time_extents
+    query['output_crs'] = output_crs
+    query['resolution'] = resolution
+    query['measurements'] = data_bands + mask_bands
+    query['group_by'] = group_by
+    query['dask_chunks'] = dict(x=1000, y=1000)
+
+    # Note: do not use EPSG:4326 if either the AoI or datasets with matching data cross the anti-meridian
+    if query_crs == 'EPSG:4326':
+        query['latitude'] = (float(latitude_from), float(latitude_to))
+        query['longitude'] = (float(longitude_from), float(longitude_to))
+    else:
+        from pyproj import Proj, transform
+
+        in_proj  = Proj(f"+init=EPSG:4326")
+        out_proj = Proj(f"+init={query_crs}")
+
+        # TODO: verify whether transform()'s interface has ever changed in an incompatible way
+        x_from, y_from = transform(in_proj, out_proj, float(longitude_from), float(latitude_from))
+        x_to, y_to = transform(in_proj, out_proj, float(longitude_to), float(latitude_to))
+
+        query['crs'] = query_crs
+        query['x'] = (x_from, x_to)
+        query['y'] = (y_from, y_to)
+
+    xx = dc.load(**query) # use the query we defined above
 
     if len(xx.dims) == 0 or len(xx.data_vars) == 0:
         return None
