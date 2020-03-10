@@ -37,19 +37,19 @@ spec:
         env:
           - name: REDIS_SERVICE_HOST
             value: "redis-master"
-        command: ['sh', '-c', 'until nslookup redis-master; do echo Waiting for redis-master; sleep 2; done;']
+        command: ['sh', '-c', 'until nslookup $REDIS_SERVICE_HOST; do echo Waiting for redis-master; sleep 2; done;']
       containers:
       - name: odc-worker
-        image: satapps/odc-products:0.0.70
+        image: satapps/odc-products:0.0.79
         env:
           #- name: EXTRA_PIP_PACKAGES
           #  value: s3fs dask-ml --upgrade
           - name: PYTHONUNBUFFERED
             value: "0"
-          #- name: REDIS_SERVICE_HOST
-          #  value: "redis-master"
-          #- name: DASK_SCHEDULER_HOST
-          #  value: "dask-scheduler.dask.svc.cluster.local"
+          - name: REDIS_SERVICE_HOST  # In the default configuration the Redis master and worker Pods are in teh same namespace
+            value: "redis-master"
+          - name: DASK_SCHEDULER_HOST
+            value: "dask-scheduler.dask.svc.cluster.local"
           #- name: AWS_NO_SIGN_REQUEST  # This option might be used for buckets with public access rights. Available since GDAL 2.3.
           #  value: "YES"
           - name: AWS_ACCESS_KEY_ID
@@ -58,8 +58,8 @@ spec:
             value: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYINVALIDKEY"
           - name: AWS_VIRTUAL_HOSTING
             value: "FALSE"
-          - name: AWS_S3_ENDPOINT
-            value: "s3-uk-1.sa-catapult.co.uk"
+          - name: AWS_S3_ENDPOINT_URL
+            value: "http://s3-uk-1.sa-catapult.co.uk"
         volumeMounts:
           - mountPath: /etc/datacube.conf
             name: datacube-conf
