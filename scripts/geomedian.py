@@ -9,7 +9,7 @@ import hdstats
 import odc.algo
 from odc.algo import to_f32, from_float, xr_geomedian
 
-def process_geomedian(dc, client, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
+def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']

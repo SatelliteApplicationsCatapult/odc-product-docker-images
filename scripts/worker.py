@@ -5,14 +5,14 @@ from utils import save_data, save_metadata
 # Request handler #
 ###################
 
-def process_request(dc, client, s3_client, job_code, **kwargs):
+def process_request(dc, s3_client, job_code, **kwargs):
     import gc
 
     try:
         if job_code == "geomedian":
             from geomedian import process_geomedian
 
-            ds = process_geomedian(dc=dc, client=client, **kwargs)
+            ds = process_geomedian(dc=dc, **kwargs)
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
         if ds:
@@ -28,14 +28,13 @@ def process_request(dc, client, s3_client, job_code, **kwargs):
         if ds:
             del ds
         gc.collect()
-        client.restart()
 
 
 #################
 # Job processor #
 #################
 
-def process_job(dc, client, s3_client, json_data):
+def process_job(dc, dask_client, s3_client, json_data):
     import json
     from datetime import datetime
 
@@ -43,12 +42,13 @@ def process_job(dc, client, s3_client, json_data):
 
     try:
         #logging.info("Started processing job."))
-        process_request(dc, client, s3_client, **loaded_json)
+        process_request(dc, s3_client, **loaded_json)
 
     except Exception as e:
         logging.error("Unhandled exception %s", e)
 
     finally:
+        dask_client.restart()
         logging.info("Finished processing job.")
 
 
@@ -71,7 +71,7 @@ def worker():
     logging.info("Initial queue state empty=%s.", q.empty())
 
     host = os.getenv("DASK_SCHEDULER_HOST", "dask-scheduler.dask.svc.cluster.local")
-    client = Client(f"{host}:8786")
+    dask_client = Client(f"{host}:8786")
 
     dc = Datacube()
 
@@ -82,7 +82,7 @@ def worker():
       if item is not None:
         itemstr = item.decode("utf=8")
         logging.info("Working on %s.", itemstr)
-        process_job(dc, client, s3_client, itemstr)
+        process_job(dc, dask_client, s3_client, itemstr)
         q.complete(item)
       else:
         logging.info("Waiting for work.")
