@@ -26,13 +26,14 @@ kubectl run --namespace $NAMESPACE redis-client --rm --tty -i --restart='Never' 
   --image docker.io/bitnami/redis:5.0.5-debian-9-r104 -- bash
 
 cat <<EOF | redis-cli -h redis-master --pipe
-rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2019-01-01", "time_to": "2019-12-31", "output_crs": "EPSG:3460"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2017-01-01", "time_to": "2017-12-31", "output_crs": "EPSG:3460"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls7_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "2005-01-01", "time_to": "2005-12-31", "output_crs": "EPSG:3460"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls5_usgs_sr_scene", "latitude_from": "-18.2316", "latitude_to": "-18.0516", "longitude_from": "178.2819", "longitude_to": "178.6019", "time_from": "1991-01-01", "time_to": "1991-12-31", "output_crs": "EPSG:3460"}'
+rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "latitude_from": "-17.5", "latitude_to": "-17.0", "longitude_from": "176.5", "longitude_to": "177.0", "time_from": "2019-01-01", "time_to": "2019-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/sentinel_2_geomedian/2019"}'
+rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "latitude_from": "-17.0", "latitude_to": "-16.0", "longitude_from": "176.0", "longitude_to": "177.0", "time_from": "2019-01-01", "time_to": "2019-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/landsat_8_geomedian/2019"}'
+rpush jobProduct '{"job_code": "geomedian", "product": "ls7_usgs_sr_scene", "latitude_from": "-18.0", "latitude_to": "-17.0", "longitude_from": "178.0", "longitude_to": "179.0", "time_from": "2013-01-01", "time_to": "2013-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/landsat_7_geomedian/2013"}'
 EOF
 exit
 ```
+
+Further examples are available under the [job-examples](job-examples) folder.
 
 A programmatic job insertion method is discussed [here](https://github.com/SatelliteApplicationsCatapult/ard-docker-images/tree/master/job-insert#using-kubernetes). 
 
