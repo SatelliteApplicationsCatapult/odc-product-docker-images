@@ -3,7 +3,7 @@ FROM satapps/dask-datacube:v1.1.1-alpha
 LABEL maintainer="Luigi Di Fraia"
 
 RUN pip install --quiet --no-cache-dir \
-    rio-cogeo
+    rio-cogeo==1.1.10
 
 COPY scripts/s3.py /s3.py
 
