@@ -18,9 +18,11 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
     if product.startswith('ls'):
         resolution = (-30, 30)
         group_by='solar_day'
+        nodata = -9999
     else:
         resolution = (-10, 10)
         group_by='time'
+        nodata = 0
 
     query = {}
 
@@ -95,7 +97,7 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
                       nocheck=True)   # disable some checks inside geomedian library that use too much ram
     yy = from_float(yy,
                     dtype='int16',
-                    nodata=0,
+                    nodata=nodata,
                     scale=1/scale,
                     offset=-offset/scale)
 
