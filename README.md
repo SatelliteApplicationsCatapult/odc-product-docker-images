@@ -1,6 +1,6 @@
 # ODC Product Docker Images
 
-Docker image to routinely generate summary EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/) within a [Kubernetes](https://kubernetes.io/) platform. YAML metadata for indexing into the Open Data Cube is also created as part of the process.
+Docker image to routinely generate derived EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/) within a [Kubernetes](https://kubernetes.io/) platform. YAML metadata for indexing into the Open Data Cube is also created as part of the process.
 
 :warning: A Helm chart to deploy the routine product generation stack (Redis and worker Pods) is yet to be worked at :warning:
 
