@@ -8,6 +8,7 @@ import xarray as xr
 import hdstats
 import odc.algo
 from odc.algo import to_f32, from_float, xr_geomedian
+from masking import mask_good_quality
 
 def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
     time_extents = (time_from, time_to)
@@ -60,33 +61,7 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
     scale, offset = (1/10_000, 0)  # differs per product, aim for 0-1 values in float32
 
     # Identify pixels with valid data (requires working with native resolution datasets)
-    if product.startswith('s2'):
-        good_quality = (
-            (xx.scene_classification == 4) | # mask in VEGETATION
-            (xx.scene_classification == 5) | # mask in NOT_VEGETATED
-            (xx.scene_classification == 6) | # mask in WATER
-            (xx.scene_classification == 7)   # mask in UNCLASSIFIED
-        )
-    elif product.startswith('ls8'):
-        good_quality = (
-            (xx.pixel_qa == 322)  | # clear
-            (xx.pixel_qa == 386)  |
-            (xx.pixel_qa == 834)  |
-            (xx.pixel_qa == 898)  |
-            (xx.pixel_qa == 1346) |
-            (xx.pixel_qa == 324)  | # water
-            (xx.pixel_qa == 388)  |
-            (xx.pixel_qa == 836)  |
-            (xx.pixel_qa == 900)  |
-            (xx.pixel_qa == 1348)
-        )
-    else:
-        good_quality = (
-            (xx.pixel_qa == 66)   | # clear
-            (xx.pixel_qa == 130)  |
-            (xx.pixel_qa == 68)   | # water
-            (xx.pixel_qa == 132)
-        )
+    good_quality = mask_good_quality(xx, product)
 
     xx_data = xx[data_bands]
     xx_clean = odc.algo.keep_good_only(xx_data, where=good_quality)
