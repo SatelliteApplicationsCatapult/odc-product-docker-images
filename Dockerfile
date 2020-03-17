@@ -9,6 +9,8 @@ COPY scripts/s3.py /s3.py
 
 COPY scripts/export.py /export.py
 
+COPY scripts/masking.py /masking.py
+
 COPY scripts/geomedian.py /geomedian.py
 
 COPY scripts/metadata.py /metadata.py
