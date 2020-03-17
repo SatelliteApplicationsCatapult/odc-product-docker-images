@@ -37,7 +37,7 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
     query['group_by'] = group_by
 
     if output_crs == 'EPSG:4326':
-        query['dask_chunks'] = dict(longitude=0.009, latitude=0.009)
+        query['dask_chunks'] = dict()
     else:
         query['dask_chunks'] = dict(x=1000, y=1000)
 
