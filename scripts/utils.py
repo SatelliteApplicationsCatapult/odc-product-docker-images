@@ -56,7 +56,10 @@ def save_data(s3_client,
         fname = basename(destination)
         logging.debug("Saving band file %s.", fname)
 
-        export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
+        if output_crs == 'EPSG:4326':
+            export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data)
+        else:
+            export_xarray_to_geotiff(ds, fname, bands=[band], no_data=no_data, crs=output_crs, x_coord='x', y_coord='y')
 
         if cogeo_output == 'True':
             import shlex, subprocess
