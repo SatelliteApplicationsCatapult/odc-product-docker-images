@@ -10,6 +10,8 @@ import odc.algo
 from odc.algo import to_f32, from_float, xr_geomedian
 from masking import mask_good_quality
 
+from pyproj import Proj, transform
+
 def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
     time_extents = (time_from, time_to)
 
@@ -33,15 +35,17 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
     query['resolution'] = resolution
     query['measurements'] = data_bands + mask_bands
     query['group_by'] = group_by
-    query['dask_chunks'] = dict(x=1000, y=1000)
+
+    if output_crs == 'EPSG:4326':
+        query['dask_chunks'] = dict(longitude=0.009, latitude=0.009)
+    else:
+        query['dask_chunks'] = dict(x=1000, y=1000)
 
     # Note: do not use EPSG:4326 if either the AoI or datasets with matching data cross the anti-meridian
     if query_crs == 'EPSG:4326':
         query['latitude'] = (float(latitude_from), float(latitude_to))
         query['longitude'] = (float(longitude_from), float(longitude_to))
     else:
-        from pyproj import Proj, transform
-
         in_proj  = Proj(f"+init=EPSG:4326")
         out_proj = Proj(f"+init={query_crs}")
 
