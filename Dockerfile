@@ -1,4 +1,4 @@
-FROM satapps/dask-datacube:v1.1.2-alpha
+FROM satapps/dask-datacube:v1.1.3-alpha
 
 LABEL maintainer="Luigi Di Fraia"
 
