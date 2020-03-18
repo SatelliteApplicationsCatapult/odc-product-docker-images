@@ -1,5 +1,6 @@
 import logging
 import os
+from pyproj import Proj, transform
 from os.path import basename
 from export import export_xarray_to_geotiff
 from metadata import generate_datacube_metadata
@@ -9,13 +10,22 @@ import yaml
 # Utils #
 #########
 
-def get_ds_extents(ds):
-    x_from = float(ds['x'][0])
-    x_to = float(ds['x'][-1])
-    y_from = float(ds['y'][0])
-    y_to = float(ds['y'][-1])
+def get_ds_extents(ds, x_coord='longitude', y_coord='latitude'):
+    x_from = float(ds[x_coord][0])
+    x_to = float(ds[x_coord][-1])
+    y_from = float(ds[y_coord][0])
+    y_to = float(ds[y_coord][-1])
 
     return x_from, x_to, y_from, y_to
+
+
+def point_to_epsg4326(crs, x, y):
+    in_proj = Proj(f"+init={crs}")
+    out_proj  = Proj(f"+init=EPSG:4326")
+
+    longitude, latitude = transform(in_proj, out_proj, x, y)
+
+    return longitude, latitude
 
 
 #################
@@ -30,7 +40,7 @@ def save_data(s3_client,
               time_from, time_to,
               output_crs,
               bucket='public-eo-data', prefix='luigi',
-              wgs84_naming='True',
+              epsg4326_naming='False',
               cogeo_output='True',
               **kwargs):
     """
@@ -40,13 +50,17 @@ def save_data(s3_client,
     pn = product[0:3] if product.startswith('ls') else product[0:2]
     no_data = -9999 if product.startswith('ls') else 0
 
-    if wgs84_naming == 'True':
-        x_from = kwargs.get('longitude_from')
-        x_to = kwargs.get('longitude_to')
-        y_from = kwargs.get('latitude_from')
-        y_to = kwargs.get('latitude_to')
-    else:
+    # Get dataset extents
+    if output_crs == 'EPSG:4326':
         x_from, x_to, y_from, y_to = get_ds_extents(ds)
+    else:
+        x_from, x_to, y_from, y_to = get_ds_extents(ds, x_coord='x', y_coord='y')
+
+    # Generate EPSG:4326 extents for band filename upon request
+    if epsg4326_naming == 'True':
+        if output_crs != 'EPSG:4326':
+            x_from, y_from = point_to_epsg4326(output_crs, x_from, y_from)
+            x_to, y_to = point_to_epsg4326(output_crs, x_to, y_to)
 
     crs = output_crs.lower().replace(':', '')
 
@@ -93,11 +107,9 @@ def save_metadata(s3_client,
                   bands,
                   product,
                   time_from, time_to,
-                  longitude_from, longitude_to,
-                  latitude_from, latitude_to,
                   output_crs,
                   bucket='public-eo-data', prefix='luigi',
-                  wgs84_naming=True,
+                  epsg4326_naming='False',
                   **kwargs):
     """
     Save YAML manifest for each band in the list of bands
@@ -105,13 +117,17 @@ def save_metadata(s3_client,
 
     pn = product[0:3] if product.startswith('ls') else product[0:2]
 
-    if wgs84_naming == True:
-        x_from = longitude_from
-        x_to = longitude_to
-        y_from = latitude_from
-        y_to = latitude_to
-    else:
+    # Get dataset extents
+    if output_crs == 'EPSG:4326':
         x_from, x_to, y_from, y_to = get_ds_extents(ds)
+    else:
+        x_from, x_to, y_from, y_to = get_ds_extents(ds, x_coord='x', y_coord='y')
+
+    # Generate EPSG:4326 extents for band filename upon request
+    if epsg4326_naming == 'True':
+        if output_crs != 'EPSG:4326':
+            x_from, y_from = point_to_epsg4326(output_crs, x_from, y_from)
+            x_to, y_to = point_to_epsg4326(output_crs, x_to, y_to)
 
     crs = output_crs.lower().replace(':', '')
 
@@ -137,7 +153,19 @@ def save_metadata(s3_client,
 
     metadata_obj_key = f"s3://{bucket}/{destination}"
 
-    x_from, x_to, y_from, y_to = get_ds_extents(ds)
+    # Get dataset extents
+    if output_crs == 'EPSG:4326':
+        x_from, x_to, y_from, y_to = get_ds_extents(ds)
+    else:
+        x_from, x_to, y_from, y_to = get_ds_extents(ds, x_coord='x', y_coord='y')
+
+    # Generate EPSG:4326 extents for metadata extents
+    if output_crs == 'EPSG:4326':
+        longitude_from, latitude_from = x_from, y_from
+        longitude_to, latitude_to = x_to, y_to
+    else:
+        longitude_from, latitude_from = point_to_epsg4326(output_crs, x_from, y_from)
+        longitude_to, latitude_to = point_to_epsg4326(output_crs, x_to, y_to)
 
     if job_code == 'geomedian':
         doc = generate_datacube_metadata(metadata_obj_key,
