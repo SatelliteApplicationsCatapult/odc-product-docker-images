@@ -26,9 +26,8 @@ kubectl run --namespace $NAMESPACE redis-client --rm --tty -i --restart='Never' 
   --image docker.io/bitnami/redis:5.0.5-debian-9-r104 -- bash
 
 cat <<EOF | redis-cli -h redis-master --pipe
-rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "latitude_from": "-17.5", "latitude_to": "-17.0", "longitude_from": "176.5", "longitude_to": "177.0", "time_from": "2019-01-01", "time_to": "2019-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/sentinel_2_geomedian/2019"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "latitude_from": "-17.0", "latitude_to": "-16.0", "longitude_from": "176.0", "longitude_to": "177.0", "time_from": "2019-01-01", "time_to": "2019-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/landsat_8_geomedian/2019"}'
-rpush jobProduct '{"job_code": "geomedian", "product": "ls7_usgs_sr_scene", "latitude_from": "-18.0", "latitude_to": "-17.0", "longitude_from": "178.0", "longitude_to": "179.0", "time_from": "2013-01-01", "time_to": "2013-12-31", "query_crs": "EPSG:3460", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/landsat_7_geomedian/2013"}'
+rpush jobProduct '{"job_code": "geomedian", "product": "s2_esa_sr_granule", "query_x_from": "2199700.0", "query_y_from": "3549700.0", "query_x_to": "2225300.0", "query_y_to": "3575300.0", "query_crs": "EPSG:3460", "time_from": "2019-01-01", "time_to": "2019-12-31", "output_crs": "EPSG:3460", "prefix": "common_sensing/fiji/sentinel_2_geomedian/2019"}'
+rpush jobProduct '{"job_code": "geomedian", "product": "ls8_usgs_sr_scene", "query_x_from": "2099700.0", "query_y_from": "-2400300.0", "query_x_to": "2200300.0", "query_y_to": "-2299700.0", "query_crs": "EPSG:3832", "time_from": "2019-01-01", "time_to": "2019-12-31", "output_crs": "EPSG:3832", "prefix": "common_sensing/vanuatu/landsat_8_geomedian/2019"}'
 EOF
 exit
 ```
