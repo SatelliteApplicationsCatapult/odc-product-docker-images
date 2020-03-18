@@ -12,7 +12,7 @@ from masking import mask_good_quality
 
 from pyproj import Proj, transform
 
-def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, longitude_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
+def process_geomedian(dc, product, query_x_from, query_x_to, query_y_from, query_y_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
@@ -35,27 +35,13 @@ def process_geomedian(dc, product, latitude_from, latitude_to, longitude_from, l
     query['resolution'] = resolution
     query['measurements'] = data_bands + mask_bands
     query['group_by'] = group_by
+    query['dask_chunks'] = dict(x=1000, y=1000)
 
-    if output_crs == 'EPSG:4326':
-        query['dask_chunks'] = dict()
-    else:
-        query['dask_chunks'] = dict(x=1000, y=1000)
-
-    # Note: do not use EPSG:4326 if either the AoI or datasets with matching data cross the anti-meridian
-    if query_crs == 'EPSG:4326':
-        query['latitude'] = (float(latitude_from), float(latitude_to))
-        query['longitude'] = (float(longitude_from), float(longitude_to))
-    else:
-        in_proj  = Proj(f"+init=EPSG:4326")
-        out_proj = Proj(f"+init={query_crs}")
-
-        # TODO: verify whether transform()'s interface has ever changed in an incompatible way
-        x_from, y_from = transform(in_proj, out_proj, float(longitude_from), float(latitude_from))
-        x_to, y_to = transform(in_proj, out_proj, float(longitude_to), float(latitude_to))
-
+    if query_crs != 'EPSG:4326':
         query['crs'] = query_crs
-        query['x'] = (x_from, x_to)
-        query['y'] = (y_from, y_to)
+
+    query['x'] = (float(query_x_from), float(query_x_to))
+    query['y'] = (float(query_y_from), float(query_y_to))
 
     xx = dc.load(**query) # use the query we defined above
 
