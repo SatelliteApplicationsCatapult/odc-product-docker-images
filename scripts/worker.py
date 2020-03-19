@@ -1,4 +1,11 @@
 import logging
+import os
+import rediswq
+from datacube import Datacube
+from dask.distributed import Client
+from s3 import S3Client
+import json
+import gc
 from utils import save_data, save_metadata
 
 ###################
@@ -6,8 +13,6 @@ from utils import save_data, save_metadata
 ###################
 
 def process_request(dc, s3_client, job_code, **kwargs):
-    import gc
-
     try:
         if job_code == "geomedian":
             from geomedian import process_geomedian
@@ -35,9 +40,6 @@ def process_request(dc, s3_client, job_code, **kwargs):
 #################
 
 def process_job(dc, dask_client, s3_client, json_data):
-    import json
-    from datetime import datetime
-
     loaded_json = json.loads(json_data)
 
     try:
@@ -57,12 +59,6 @@ def process_job(dc, dask_client, s3_client, json_data):
 ##########
 
 def worker():
-    import os
-    import rediswq
-    from datacube import Datacube
-    from dask.distributed import Client
-    from s3 import S3Client
-
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 
     host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
