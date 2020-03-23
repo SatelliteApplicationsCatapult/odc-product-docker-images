@@ -1,5 +1,5 @@
 name: ls8_geomedian_annual
-description: Landsat 8 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+description: Landsat 8 Surface Reflectance Geometric Median 30 metre
 metadata_type: eo
 
 metadata:
