@@ -1,5 +1,5 @@
-name: s2_epsg3460_geomedian_annual
-description: Sentinel-2 Surface Reflectance Geometric Median 10 metre, Fiji Map Grid (EPSG:3460)
+name: s2_geomedian_annual
+description: Sentinel-2 Surface Reflectance Geometric Median 10 metre
 metadata_type: eo
 
 metadata:
@@ -46,11 +46,6 @@ measurements:
         units: 'reflectance'
 
 storage:
-    crs: 'EPSG:3460'
-    dimension_order:
-        - time
-        - y
-        - x
     driver: GeoTIFF
     resolution:
         y: -10
