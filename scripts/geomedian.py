@@ -12,7 +12,14 @@ from masking import mask_good_quality
 
 from pyproj import Proj, transform
 
-def process_geomedian(dc, product, query_x_from, query_x_to, query_y_from, query_y_to, time_from, time_to, output_crs, query_crs='EPSG:4326', **kwargs):
+def process_geomedian(dc,
+                      product,
+                      query_x_from, query_x_to,
+                      query_y_from, query_y_to,
+                      time_from, time_to,
+                      output_crs,
+                      query_crs='EPSG:4326',
+                      **kwargs):
     time_extents = (time_from, time_to)
 
     data_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
