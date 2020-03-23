@@ -53,7 +53,7 @@ storage:
 
 ---
 name: ls7_geomedian_annual
-description: Landsat 7 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+description: Landsat 7 Surface Reflectance Geometric Median 30 metre
 metadata_type: eo
 
 metadata:
@@ -107,7 +107,7 @@ storage:
 
 ---
 name: ls5_geomedian_annual
-description: Landsat 5 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+description: Landsat 5 Surface Reflectance Geometric Median 30 metre
 metadata_type: eo
 
 metadata:
@@ -161,7 +161,7 @@ storage:
 
 ---
 name: ls4_geomedian_annual
-description: Landsat 4 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
+description: Landsat 4 Surface Reflectance Geometric Median 30 metre
 metadata_type: eo
 
 metadata:
