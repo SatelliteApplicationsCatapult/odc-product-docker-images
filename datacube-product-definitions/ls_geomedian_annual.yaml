@@ -1,4 +1,4 @@
-name: ls8_epsg3460_geomedian_annual
+name: ls8_geomedian_annual
 description: Landsat 8 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
 metadata_type: eo
 
@@ -46,18 +46,13 @@ measurements:
         units: 'reflectance'
 
 storage:
-    crs: 'EPSG:3460'
-    dimension_order:
-        - time
-        - y
-        - x
     driver: GeoTIFF
     resolution:
         y: -30
         x: 30
 
 ---
-name: ls7_epsg3460_geomedian_annual
+name: ls7_geomedian_annual
 description: Landsat 7 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
 metadata_type: eo
 
@@ -105,18 +100,13 @@ measurements:
         units: 'reflectance'
 
 storage:
-    crs: 'EPSG:3460'
-    dimension_order:
-        - time
-        - y
-        - x
     driver: GeoTIFF
     resolution:
         y: -30
         x: 30
 
 ---
-name: ls5_epsg3460_geomedian_annual
+name: ls5_geomedian_annual
 description: Landsat 5 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
 metadata_type: eo
 
@@ -164,18 +154,13 @@ measurements:
         units: 'reflectance'
 
 storage:
-    crs: 'EPSG:3460'
-    dimension_order:
-        - time
-        - y
-        - x
     driver: GeoTIFF
     resolution:
         y: -30
         x: 30
 
 ---
-name: ls4_epsg3460_geomedian_annual
+name: ls4_geomedian_annual
 description: Landsat 4 Surface Reflectance Geometric Median 30 metre, Fiji Map Grid (EPSG:3460)
 metadata_type: eo
 
@@ -223,11 +208,6 @@ measurements:
         units: 'reflectance'
 
 storage:
-    crs: 'EPSG:3460'
-    dimension_order:
-        - time
-        - y
-        - x
     driver: GeoTIFF
     resolution:
         y: -30
