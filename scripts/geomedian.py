@@ -44,8 +44,8 @@ def process_geomedian(dc,
     query['measurements'] = data_bands + mask_bands
     query['group_by'] = group_by
     query['dask_chunks'] = {
-      x: int(dask_chunk_size),
-      y: int(dask_chunk_size)
+      'x': int(dask_chunk_size),
+      'y': int(dask_chunk_size)
     }
 
     if query_crs != 'EPSG:4326':
