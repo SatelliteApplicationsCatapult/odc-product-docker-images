@@ -19,6 +19,7 @@ def process_geomedian(dc,
                       time_from, time_to,
                       output_crs,
                       query_crs='EPSG:4326',
+                      dask_chunk_size='1000',
                       **kwargs):
     time_extents = (time_from, time_to)
 
@@ -42,7 +43,10 @@ def process_geomedian(dc,
     query['resolution'] = resolution
     query['measurements'] = data_bands + mask_bands
     query['group_by'] = group_by
-    query['dask_chunks'] = dict(x=1000, y=1000)
+    query['dask_chunks'] = {
+      x: int(dask_chunk_size),
+      y: int(dask_chunk_size)
+    }
 
     if query_crs != 'EPSG:4326':
         query['crs'] = query_crs
