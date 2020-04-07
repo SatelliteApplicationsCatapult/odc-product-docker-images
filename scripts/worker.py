@@ -74,14 +74,14 @@ def worker():
     s3_client = S3Client()
 
     while not q.empty():
-      item = q.lease(lease_secs=1800, block=True, timeout=600)
-      if item is not None:
-        itemstr = item.decode("utf=8")
-        logging.info("Working on %s.", itemstr)
-        process_job(dc, dask_client, s3_client, itemstr)
-        q.complete(item)
-      else:
-        logging.info("Waiting for work.")
+        item = q.lease(lease_secs=1800, block=True, timeout=600)
+        if item is not None:
+            itemstr = item.decode("utf=8")
+            logging.info("Working on %s.", itemstr)
+            process_job(dc, dask_client, s3_client, itemstr)
+            q.complete(item)
+        else:
+            logging.info("Waiting for work.")
 
     logging.info("Queue empty, exiting.")
 
