@@ -2,7 +2,7 @@
 
 Docker image to routinely generate derived EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/) within a [Kubernetes](https://kubernetes.io/) platform. YAML metadata for indexing derived products into the Open Data Cube is also created as part of the process.
 
-:warning: A Helm chart to deploy the routine product generation stack (Redis and worker Pods) is yet to be worked at :warning:
+:warning: A Helm chart to deploy the routine product generation stack is [being worked at](https://github.com/SatelliteApplicationsCatapult/helm-charts/tree/master/incubator/odc-product-generation) :warning:
 
 ## TL;DR
 
