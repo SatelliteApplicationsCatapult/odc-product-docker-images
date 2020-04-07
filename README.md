@@ -1,8 +1,8 @@
 # ODC Product Docker Images
 
-Docker image to routinely generate derived EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/) within a [Kubernetes](https://kubernetes.io/) platform. YAML metadata for indexing derived products into the Open Data Cube is also created as part of the process.
+Docker image to routinely generate derived EO products using the [Open Data Cube](https://www.opendatacube.org/) and [Dask](https://dask.org/). YAML metadata for indexing derived products into the Open Data Cube is also created as part of the process.
 
-:warning: For operational deployments, please visit the [Helm Charts repo](https://github.com/SatelliteApplicationsCatapult/helm-charts) instead. :warning:
+:warning: For operational deployments with [Kubernetes](https://kubernetes.io/), please visit the [Helm Charts repo](https://github.com/SatelliteApplicationsCatapult/helm-charts) instead. :warning:
 
 ## Building and pushing to Docker Hub
 
