@@ -26,6 +26,3 @@ VERSION=0.0.91
 docker build . -t satapps/odc-products:${VERSION}
 docker push satapps/odc-products:${VERSION}
 ```
-
-## TODO
-- Define a Helm chart for templating and value substitution
