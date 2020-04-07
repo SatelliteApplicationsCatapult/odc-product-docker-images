@@ -46,7 +46,7 @@ spec:
           #  value: s3fs dask-ml --upgrade
           - name: PYTHONUNBUFFERED
             value: "0"
-          - name: REDIS_SERVICE_HOST  # In the default configuration the Redis master and worker Pods are in teh same namespace
+          - name: REDIS_SERVICE_HOST  # In the default configuration the Redis master and worker Pods are in the same namespace
             value: "redis-master"
           - name: DASK_SCHEDULER_HOST
             value: "dask-scheduler.dask.svc.cluster.local"
