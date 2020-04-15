@@ -22,6 +22,7 @@ def process_fractional_cover(
     dask_y_chunk_size="600",
     **kwargs,
 ):
+    nodata = -9999
     time = (time_from, time_to)
 
     data_bands = ["red", "green", "blue", "nir", "swir1", "swir2"]
@@ -29,11 +30,9 @@ def process_fractional_cover(
     # Product here is a geomedian product
     if product.startswith("ls"):
         resolution = (-30, 30)
-        nodata = -9999
         water_product = product[:3] + "_water_classification"
     else:
         resolution = (-10, 10)
-        nodata = 0
         # TODO: Change when S2 WOFS ready
         water_product = None
         return None
