@@ -1,0 +1,53 @@
+name: s2_fractional_cover_annual
+description: Sentinel-2 Fractional Cover 10 metre
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: MSI
+    platform:
+        code: SENTINEL_2
+    product_type: fractional_cover_annual_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: blue
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: green
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: red
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: nir
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir1
+        nodata: -9999
+        units: 'reflectance'
+    -
+        dtype: int16
+        name: swir2
+        nodata: -9999
+        units: 'reflectance'
+
+storage:
+    driver: GeoTIFF
+    resolution:
+        y: -10
+        x: 10
+

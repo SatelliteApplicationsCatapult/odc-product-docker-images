@@ -20,6 +20,12 @@ def process_request(dc, s3_client, job_code, **kwargs):
             ds = process_geomedian(dc=dc, **kwargs)
             save_bands = ['red', 'green', 'blue', 'nir', 'swir1', 'swir2']
 
+        if job_code == "fractional_cover":
+            from fractional_cover import process_fractional_cover
+
+            ds = process_fractional_cover(dc=dc, **kwargs)
+            save_bands = ['bs', 'pv', 'npv']
+
         if ds:
             logging.info("Saving data.")
             save_data(s3_client=s3_client, ds=ds, job_code=job_code, bands=save_bands, **kwargs)
