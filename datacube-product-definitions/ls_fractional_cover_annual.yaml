@@ -16,34 +16,19 @@ metadata:
 measurements:
     -
         dtype: int16
-        name: blue
+        name: bs
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: green
+        name: npv
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: red
+        name: pv
         nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: nir
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir1
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir2
-        nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
 
 storage:
     driver: GeoTIFF
@@ -70,34 +55,19 @@ metadata:
 measurements:
     -
         dtype: int16
-        name: blue
+        name: bs
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: green
+        name: npv
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: red
+        name: pv
         nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: nir
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir1
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir2
-        nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
 
 storage:
     driver: GeoTIFF
@@ -124,34 +94,19 @@ metadata:
 measurements:
     -
         dtype: int16
-        name: blue
+        name: bs
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: green
+        name: npv
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: red
+        name: pv
         nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: nir
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir1
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir2
-        nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
 
 storage:
     driver: GeoTIFF
@@ -178,34 +133,19 @@ metadata:
 measurements:
     -
         dtype: int16
-        name: blue
+        name: bs
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: green
+        name: npv
         nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
     -
         dtype: int16
-        name: red
+        name: pv
         nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: nir
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir1
-        nodata: -9999
-        units: 'reflectance'
-    -
-        dtype: int16
-        name: swir2
-        nodata: -9999
-        units: 'reflectance'
+        units: 'percentage'
 
 storage:
     driver: GeoTIFF
