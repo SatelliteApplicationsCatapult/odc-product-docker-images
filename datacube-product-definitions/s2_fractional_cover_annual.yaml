@@ -1,0 +1,38 @@
+name: s2_fractional_cover_annual
+description: Sentinel-2 Fractional Cover 10 metre
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    instrument:
+        name: MSI
+    platform:
+        code: SENTINEL_2
+    product_type: fractional_cover_annual_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: int16
+        name: bs
+        nodata: -9999
+        units: 'percentage'
+    -
+        dtype: int16
+        name: npv
+        nodata: -9999
+        units: 'percentage'
+    -
+        dtype: int16
+        name: pv
+        nodata: -9999
+        units: 'percentage'
+
+storage:
+    driver: GeoTIFF
+    resolution:
+        y: -10
+        x: 10
+
