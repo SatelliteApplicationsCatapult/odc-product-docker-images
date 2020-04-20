@@ -1,9 +1,12 @@
-FROM satapps/dask-datacube:v1.1.3-alpha
+FROM luigidifraia/dask-datacube:dask-2.14.0-gdal-2.4.4
 
 LABEL maintainer="Luigi Di Fraia"
 
 RUN pip install --quiet --no-cache-dir \
     rio-cogeo==1.1.10
+
+RUN pip install --quiet --no-cache-dir \
+    git+https://github.com/SatelliteApplicationsCatapult/datacube-utilities.git#egg=datacube_utilities
 
 COPY scripts/s3.py /s3.py
 
