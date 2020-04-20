@@ -57,9 +57,9 @@ def process_geomedian(
         return None
 
     scale, offset = (
-        1 / 10_000,
+        1 / 10_000,  # differs per product, aim for 0-1 values in float32
         0,
-    )  # differs per product, aim for 0-1 values in float32
+    )
 
     # Identify pixels with valid data (requires working with native resolution datasets)
     good_quality = mask_good_quality(xx, product)
@@ -71,10 +71,13 @@ def process_geomedian(
         xx_clean,
         num_threads=1,  # disable internal threading, dask will run several concurrently
         eps=0.2 * scale,  # 1/5 pixel value resolution
-        nocheck=True,
-    )  # disable some checks inside geomedian library that use too much ram
+        nocheck=True,  # disable some checks inside geomedian library that use too much ram
+    )
     yy = from_float(
-        yy, dtype="int16", nodata=nodata, scale=1 / scale, offset=-offset / scale
+        yy, dtype="int16",
+        nodata=nodata,
+        scale=1 / scale,
+        offset=-offset / scale
     )
 
     yy = yy.compute()
