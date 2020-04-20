@@ -17,32 +17,32 @@ measurements:
     -
         dtype: int16
         name: blue
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
     -
         dtype: int16
         name: green
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
     -
         dtype: int16
         name: red
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
     -
         dtype: int16
         name: nir
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
     -
         dtype: int16
         name: swir1
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
     -
         dtype: int16
         name: swir2
-        nodata: -9999
+        nodata: 0
         units: 'reflectance'
 
 storage:
