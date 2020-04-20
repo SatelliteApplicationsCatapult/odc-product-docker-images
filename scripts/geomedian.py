@@ -77,7 +77,7 @@ def process_geomedian(
         yy, dtype="int16",
         nodata=nodata,
         scale=1 / scale,
-        offset=-offset / scale
+        offset=-offset / scale,
     )
 
     yy = yy.compute()
