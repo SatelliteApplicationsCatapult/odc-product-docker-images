@@ -177,3 +177,43 @@ def save_metadata(s3_client,
         finally:
             os.remove(fname)
 
+######################
+# Shapefile uploader #
+######################
+
+def upload_shapefile(s3_client,
+                     ds,
+                     fname,
+                     job_code,
+                     band,
+                     product,
+                     time_from, time_to,
+                     output_crs,
+                     bucket='public-eo-data', prefix='luigi',
+                     epsg4326_naming='False',
+                     cogeo_output='True',
+                     **kwargs):
+    pn = product[0:3] if product.startswith('ls') else product[0:2]
+
+    # Get dataset extents
+    x_from, x_to, y_from, y_to = get_ds_extents(ds)
+
+    # Generate EPSG:4326 extents for band filename upon request
+    if epsg4326_naming == 'True':
+        x_from, y_from = point_to_epsg4326(output_crs, x_from, y_from)
+        x_to, y_to = point_to_epsg4326(output_crs, x_to, y_to)
+
+    crs = output_crs.lower().replace(':', '')
+
+    destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.shp"
+
+    logging.debug("Saving band shape file %s.", basename(destination))
+
+    try:
+        s3_client.upload_file(fname, bucket, destination);
+
+    except Exception as e:
+        logging.error("Unhandled exception %s", e)
+
+    finally:
+        os.remove(fname)
