@@ -186,15 +186,12 @@ def upload_shapefile(s3_client,
                      fname,
                      job_code,
                      band,
-                     product,
                      time_from, time_to,
                      output_crs,
                      bucket='public-eo-data', prefix='luigi',
                      epsg4326_naming='False',
                      cogeo_output='True',
                      **kwargs):
-    pn = product[0:3] if product.startswith('ls') else product[0:2]
-
     # Get dataset extents
     x_from, x_to, y_from, y_to = get_ds_extents(ds)
 
@@ -205,7 +202,7 @@ def upload_shapefile(s3_client,
 
     crs = output_crs.lower().replace(':', '')
 
-    destination = f"{prefix}/{pn}_{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.shp"
+    destination = f"{prefix}/{job_code}_{time_from}_{time_to}_{crs}_{x_from}_{y_from}_{x_to}_{y_to}_{band}.shp"
 
     logging.debug("Saving band shape file %s.", basename(destination))
 
