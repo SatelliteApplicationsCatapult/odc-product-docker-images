@@ -6,7 +6,7 @@ from dask.distributed import Client
 from s3 import S3Client
 import json
 import gc
-from utils import save_data, save_metadata, save_shapefile
+from utils import save_data, save_metadata, upload_shapefile
 
 ###################
 # Request handler #
@@ -31,7 +31,7 @@ def process_request(dc, s3_client, job_code, **kwargs):
 
             ds, shp_fname = process_shoreline(dc=dc, **kwargs)
             save_bands = ['shoreline']
-            save_shapefile(s3_client=s3_client, ds=ds, fname=shp_fname, job_code=job_code, band='shoreline', **kwargs)
+            upload_shapefile(s3_client=s3_client, ds=ds, fname=shp_fname, job_code=job_code, band='shoreline', **kwargs)
 
         if ds:
             logging.info("Saving data.")
