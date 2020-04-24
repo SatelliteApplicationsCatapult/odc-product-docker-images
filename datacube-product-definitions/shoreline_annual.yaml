@@ -1,0 +1,23 @@
+name: shoreline_annual
+description: Shoreline Extraction 30 metre
+metadata_type: eo
+
+metadata:
+    format:
+        name: GeoTIFF
+    product_type: shoreline_annual_summary
+    statistics:
+        period: 1y
+
+measurements:
+    -
+        dtype: float64
+        name: shoreline
+        nodata: -9999
+        units: 'percentage'
+
+storage:
+    driver: GeoTIFF
+    resolution:
+        y: -30
+        x: 30

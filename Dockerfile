@@ -24,4 +24,6 @@ COPY scripts/worker.py /worker.py
 
 COPY scripts/rediswq.py /rediswq.py
 
+COPY tide-data/ /tide-data/
+
 CMD [ "python", "worker.py" ]
