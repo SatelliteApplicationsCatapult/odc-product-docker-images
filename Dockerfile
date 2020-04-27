@@ -8,22 +8,10 @@ RUN pip install --quiet --no-cache-dir \
 RUN pip install --quiet --no-cache-dir \
     git+https://github.com/SatelliteApplicationsCatapult/datacube-utilities.git#egg=datacube_utilities
 
-COPY scripts/s3.py /s3.py
-
-COPY scripts/export.py /export.py
-
-COPY scripts/masking.py /masking.py
-
-COPY scripts/geomedian.py /geomedian.py
-
-COPY scripts/metadata.py /metadata.py
-
-COPY scripts/utils.py /utils.py
-
-COPY scripts/worker.py /worker.py
-
-COPY scripts/rediswq.py /rediswq.py
+COPY scripts/ /scripts/
 
 COPY tide-data/ /tide-data/
+
+WORKDIR /scripts/
 
 CMD [ "python", "worker.py" ]
