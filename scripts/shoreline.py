@@ -12,7 +12,7 @@ import datacube_utilities.waterline_functions_deaafrica as waterline_funcs
 def load_tide_data():
     tide_files = "/tide-data/*.csv"
     dfs = []
-    # the data here comes from http://www.bom.gov.au/oceanography/projects/spslcmp/data/index.shtml for fij
+    # The data here comes from http://www.bom.gov.au/oceanography/projects/spslcmp/data/index.shtml for Fiji
     for f in tide_files:
         # We must read the data now because it doesn't exist on the dask workers
         df = pd.read_csv(f)
