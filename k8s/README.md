@@ -38,7 +38,7 @@ Deploy the worker within the same Kubernetes namespace:
 sed -i "s/namespace:.*/namespace: $NAMESPACE/" deploy.yaml
 
 if [ ! "${RELEASEREDIS}" = "redis" ]; then
-  REDIS_SERVICE_HOST=${RELEASEREDIS}-redis-master
+  REDIS_SERVICE_HOST=${RELEASEREDIS}-master
   sed -i "s/redis-master/${REDIS_SERVICE_HOST}/g" deploy.yaml
 fi
 
