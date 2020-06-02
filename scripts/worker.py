@@ -114,7 +114,7 @@ def worker():
 
     s3_client = S3Client()
 
-    lease_secs = int(os.getenv("LEASE_PERIOD", "3600"))
+    lease_secs = int(os.getenv("JOB_LEASE_PERIOD", "3600"))
 
     while not q.empty():
         item = q.lease(lease_secs=lease_secs, block=True, timeout=600)
