@@ -1,12 +1,38 @@
 import logging
 import os
 import rediswq
+import signal
+from contextlib import contextmanager
 from datacube import Datacube
 from dask.distributed import Client
 from s3 import S3Client
 import json
 import gc
 from utils import save_data, save_metadata, upload_shapefile
+
+###################
+# Timeout handler #
+###################
+
+@contextmanager
+def timeout(time):
+    # Register a function to raise a TimeoutError on the signal.
+    signal.signal(signal.SIGALRM, raise_timeout)
+    # Schedule the signal to be sent after ``time``.
+    signal.alarm(time)
+
+    try:
+        yield
+    except TimeoutError:
+        raise
+    finally:
+        # Unregister the signal so it won't be triggered
+        # if the timeout is not reached.
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+def raise_timeout(signum, frame):
+    raise TimeoutError
+
 
 ###################
 # Request handler #
@@ -52,12 +78,13 @@ def process_request(dc, s3_client, job_code, **kwargs):
 # Job processor #
 #################
 
-def process_job(dc, dask_client, s3_client, json_data):
+def process_job(dc, dask_client, s3_client, json_data, timeout_secs):
     loaded_json = json.loads(json_data)
 
     try:
         #logging.info("Started processing job."))
-        process_request(dc, s3_client, **loaded_json)
+        with timeout(timeout_secs):
+            process_request(dc, s3_client, **loaded_json)
 
     except Exception as e:
         logging.error("Unhandled exception %s", e)
@@ -76,6 +103,7 @@ def worker():
 
     host = os.getenv("REDIS_SERVICE_HOST", "redis-master")
     q = rediswq.RedisWQ(name="jobProduct", host=host)
+
     logging.info("Worker with sessionID %s.", q.sessionID())
     logging.info("Initial queue state empty=%s.", q.empty())
 
@@ -86,12 +114,14 @@ def worker():
 
     s3_client = S3Client()
 
+    lease_secs = int(os.getenv("JOB_LEASE_PERIOD", "3600"))
+
     while not q.empty():
-        item = q.lease(lease_secs=1800, block=True, timeout=600)
+        item = q.lease(lease_secs=lease_secs, block=True, timeout=600)
         if item is not None:
             itemstr = item.decode("utf=8")
             logging.info("Working on %s.", itemstr)
-            process_job(dc, dask_client, s3_client, itemstr)
+            process_job(dc, dask_client, s3_client, itemstr, lease_secs)
             q.complete(item)
         else:
             logging.info("Waiting for work.")
