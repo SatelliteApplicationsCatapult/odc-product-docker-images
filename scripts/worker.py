@@ -78,7 +78,7 @@ def process_request(dc, s3_client, job_code, **kwargs):
 # Job processor #
 #################
 
-def process_job(dc, dask_client, s3_client, json_data):
+def process_job(dc, dask_client, s3_client, json_data, timeout_secs):
     loaded_json = json.loads(json_data)
 
     try:
