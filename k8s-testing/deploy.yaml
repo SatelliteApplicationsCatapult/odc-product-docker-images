@@ -40,7 +40,7 @@ spec:
         command: ['sh', '-c', 'until nslookup $REDIS_SERVICE_HOST; do echo Waiting for redis-master; sleep 2; done;']
       containers:
       - name: odc-worker
-        image: satapps/odc-products:0.0.93
+        image: satapps/odc-products:0.0.94
         env:
           #- name: EXTRA_PIP_PACKAGES
           #  value: s3fs dask-ml --upgrade
