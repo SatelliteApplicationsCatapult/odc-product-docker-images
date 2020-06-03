@@ -23,8 +23,10 @@ def timeout(time):
 
     try:
         yield
+
     except TimeoutError:
         raise
+
     finally:
         # Unregister the signal so it won't be triggered
         # if the timeout is not reached.
