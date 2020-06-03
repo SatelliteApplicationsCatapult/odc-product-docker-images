@@ -25,7 +25,7 @@ def timeout(time):
         yield
 
     except TimeoutError:
-        raise
+        pass
 
     finally:
         # Unregister the signal so it won't be triggered
@@ -66,6 +66,9 @@ def process_request(dc, s3_client, job_code, **kwargs):
             save_data(s3_client=s3_client, ds=ds, job_code=job_code, bands=save_bands, **kwargs)
             logging.info("Saving metadata.")
             save_metadata(s3_client=s3_client, ds=ds, job_code=job_code, bands=save_bands, **kwargs)
+
+    except TimeoutError:
+        logging.error("Processing timed out.")
 
     except Exception as e:
         logging.error("Unhandled exception %s", e)
