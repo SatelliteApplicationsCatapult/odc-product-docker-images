@@ -1,9 +1,9 @@
-FROM satapps/dask-datacube:v2.1.0-alpha
+FROM satapps/dask-datacube:v3.0.1-alpha
 
 LABEL maintainer="Luigi Di Fraia"
 
 RUN pip install --no-cache-dir \
-    rio-cogeo==1.1.10
+    rio-cogeo
 
 COPY scripts/ /scripts/
 
